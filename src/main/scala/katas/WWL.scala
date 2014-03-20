@@ -6,13 +6,16 @@ object WWL {
 
 
     def lastButOneElementFromList(list: List[Int]) :Int = list match {
-      case head::rest => lastButOneElementFromList(rest)
-      case _::tail::Nil => _
+      case secondLast::last::Nil => secondLast
+      case _ :: rest => lastButOneElementFromList(rest)
       case _ => throw new NoSuchElementException
     }
 
   def lastButOneElementFromListUsingInbuiltMethod(list: List[Int]): Int = {
-    2
+    if(list.isEmpty){
+      throw new NoSuchElementException
+    }
+    list.init.last
   }
 
 }
