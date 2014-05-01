@@ -18,4 +18,18 @@ object WWL {
     list.init.last
   }
 
+  def nthElementOfList[A](list:List[A], elementAt:Int) : A = {
+    if(list.length < elementAt+1){
+      throw new NoSuchElementException
+    }
+    list(elementAt)
+  }
+
+  def nthElementOfListUsingDrop[A](list:List[A], elementAt:Int) : A = {
+    if(list.length < elementAt+1){
+      throw new NoSuchElementException
+    }
+    list.drop(elementAt).head
+  }
+
 }

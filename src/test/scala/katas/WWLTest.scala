@@ -14,4 +14,9 @@ class WWLTest extends FlatSpec with Matchers{
     WWL lastButOneElementFromListUsingInbuiltMethod List(1,2,3) should be(2)
   }
 
+  it should "get nth element of the list" in {
+    WWL nthElementOfList(List(1,2,3,4),2) should be(3)
+    WWL nthElementOfListUsingDrop(List(1,2,3,4),3) should be(4)
+  }
+
 }
