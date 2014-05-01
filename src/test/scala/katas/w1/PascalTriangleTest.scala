@@ -43,4 +43,10 @@ class PascalTriangleTest extends FunSuite with Matchers {
     }
   }
 
+  test("number at row and column using tail recursion") {
+    forAll(pascalTrianglePositionValues) {(row, column, value) =>
+      tailRecursiveAt(row, column) should be(value)
+    }
+  }
+
 }

@@ -1,5 +1,7 @@
 package katas.w1
 
+import scala.annotation.tailrec
+
 /**
  *
  * User: sameer
@@ -22,11 +24,20 @@ object PascalTriangle {
 
   }
 
-  def position(row: Int, col: Int): Int = {
-    1
-  }
-
   def tailRecursiveAt(row: Int, col: Int) : Int = {
-    position(row-1,col-1) + position(row-1, col)
+    //@tailrec
+    def position(row: Int, col: Int, first: Int, invalidPositionValue: Int): Int = {
+      if(col<0 || col>row){
+        return invalidPositionValue
+      }
+
+      if(row == 0){
+        return first
+      }
+
+      position(row-1,col-1,1,0 ) + position(row-1, col, 1,0)
+
+    }
+    position(row, col,1,0)
   }
 }
