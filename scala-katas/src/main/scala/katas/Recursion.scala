@@ -2,7 +2,7 @@ package katas
 
 import scala.annotation.tailrec
 
-object Recursion extends App {
+object Recursion {
 
   /*
   The following pattern of numbers is called Pascal’s triangle.

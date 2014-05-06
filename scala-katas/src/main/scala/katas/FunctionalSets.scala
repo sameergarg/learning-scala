@@ -1,0 +1,7 @@
+package katas
+
+object FunctionalSets {
+
+
+
+}
