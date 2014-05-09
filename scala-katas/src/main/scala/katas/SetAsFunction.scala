@@ -1,6 +1,6 @@
 package katas
 
-object FunctionalSets {
+object SetAsFunction {
   /**
    * We represent a set by its characteristic function, i.e.
    * its `contains` predicate.
@@ -49,14 +49,12 @@ object FunctionalSets {
    * Returns whether all bounded integers within `s` satisfy `p`.
    */
   def forall(s: Set, p: Int => Boolean): Boolean = {
-
     def loop(a: Int): Boolean = {
       if (contains(s,a) && !p(a)) false
-      else if (a>1000) true
+      else if (a>bound) true
       else loop(a+1)
     }
-
-    loop(-1000)
+    loop(-bound)
   }
 
   /**
@@ -64,20 +62,15 @@ object FunctionalSets {
    * that satisfies `p`.
    */
   def exists(s: Set, p: Int => Boolean): Boolean = {
-    def loop(a: Int): Boolean = {
-      if(contains(s,a) && p(a))
-        true
-      else
-        loop(a+1)
-    }
-
-    loop(-1000)
+    !forall(s, x => !p(x))
   }
 
   /**
    * Returns a set transformed by applying `f` to each element of `s`.
    */
-  def map(s: Set, f: Int => Int): Set = ???
+  def map(s: Set, f: Int => Int): Set = {
+    y => exists(s, x=>f(x)==y )
+  }
 
   /**
    * Displays the contents of a set

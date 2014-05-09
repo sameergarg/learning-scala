@@ -4,7 +4,7 @@ import org.scalatest.FunSuite
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import FunctionalSets._
+import SetAsFunction._
 /**
  * This class is a test suite for the methods in object FunSets. To run
  * the test suite, you can either:
@@ -12,7 +12,7 @@ import FunctionalSets._
  *  - right-click the file in eclipse and chose "Run As" - "JUnit Test"
  */
 @RunWith(classOf[JUnitRunner])
-class FunSetSuite extends FunSuite {
+class SetAsFunctionSuite extends FunSuite {
 
 
   /**
