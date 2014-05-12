@@ -1,6 +1,6 @@
 package katas
 
-import org.scalatest.FunSuite
+import org.scalatest.{Matchers, FunSuite}
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -12,7 +12,7 @@ import SetAsFunction._
  *  - right-click the file in eclipse and chose "Run As" - "JUnit Test"
  */
 @RunWith(classOf[JUnitRunner])
-class SetAsFunctionSuite extends FunSuite {
+class SetAsFunctionSuite extends FunSuite with Matchers {
 
 
   /**
@@ -105,6 +105,39 @@ class SetAsFunctionSuite extends FunSuite {
       assert(contains(s, 1), "Union 1")
       assert(contains(s, 2), "Union 2")
       assert(!contains(s, 3), "Union 3")
+    }
+  }
+
+  test("should map set elements") {
+    new TestSets {
+      val mappedS1 = map(s1, x => x+100)
+      contains(mappedS1, 101) shouldBe true
+
+      val mappedS2 = map(s2, x => x*x)
+      contains(mappedS2, 4) shouldBe true
+    }
+  }
+
+  test("should test forAll") {
+    new TestSets {
+      forall(s1, x => x==1) shouldBe true
+      forall(s2, x => x%2==0) shouldBe true
+      forall(s3, x => x%2==1) shouldBe true
+    }
+  }
+
+  test("should test exists") {
+    new TestSets {
+      val s = union(union(s1,s2),s3)
+      exists(s, x=>x%5==0) shouldBe false
+      exists(s, x=>x%2==0) shouldBe true
+    }
+  }
+
+  test("should test intersection") {
+    new TestSets {
+      contains(intersect(s1,s2),1) shouldBe false
+      contains(intersect(union(s1,s2),union(s2,s3)),2) shouldBe true
     }
   }
 }
