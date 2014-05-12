@@ -33,7 +33,7 @@ object SetAsFunction {
    * Returns the difference of the two given sets,
    * the set of all elements of `s` that are not in `t`.
    */
-  def diff(s: Set, t: Set): Set = {x => contains(s,x) || !contains(t,x)}
+  def diff(s: Set, t: Set): Set = {x => contains(s,x) && !contains(intersect(s,t),x)}
 
   /**
    * Returns the subset of `s` for which `p` holds.

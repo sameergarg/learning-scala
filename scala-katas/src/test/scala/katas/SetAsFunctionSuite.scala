@@ -5,11 +5,12 @@ import org.scalatest.{Matchers, FunSuite}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import SetAsFunction._
+
 /**
  * This class is a test suite for the methods in object FunSets. To run
  * the test suite, you can either:
- *  - run the "test" command in the SBT console
- *  - right-click the file in eclipse and chose "Run As" - "JUnit Test"
+ * - run the "test" command in the SBT console
+ * - right-click the file in eclipse and chose "Run As" - "JUnit Test"
  */
 @RunWith(classOf[JUnitRunner])
 class SetAsFunctionSuite extends FunSuite with Matchers {
@@ -21,9 +22,9 @@ class SetAsFunctionSuite extends FunSuite with Matchers {
    * http://doc.scalatest.org/1.9.1/index.html#org.scalatest.FunSuite
    *
    * Operators
-   *  - test
-   *  - ignore
-   *  - pending
+   * - test
+   * - ignore
+   * - pending
    */
 
   /**
@@ -51,36 +52,45 @@ class SetAsFunctionSuite extends FunSuite with Matchers {
   test("contains is implemented") {
     assert(contains(x => true, 100))
   }
-  
+
   /**
    * When writing tests, one would often like to re-use certain values for multiple
    * tests. For instance, we would like to create an Int-set and have multiple test
    * about it.
-   * 
+   *
    * Instead of copy-pasting the code for creating the set into every test, we can
    * store it in the test class using a val:
-   * 
-   *   val s1 = singletonSet(1)
-   * 
+   *
+   * val s1 = singletonSet(1)
+   *
    * However, what happens if the method "singletonSet" has a bug and crashes? Then
    * the test methods are not even executed, because creating an instance of the
    * test class fails!
-   * 
+   *
    * Therefore, we put the shared values into a separate trait (traits are like
    * abstract classes), and create an instance inside each test method.
-   * 
+   *
    */
 
   trait TestSets {
     val s1 = singletonSet(1)
     val s2 = singletonSet(2)
     val s3 = singletonSet(3)
+
+    def setOf(elements: Int*) = {
+      require(elements.size > 1)
+      val first = singletonSet(elements.head)
+      elements.tail.map { element =>
+        singletonSet(element)
+      }.foldLeft(first)(union)
+
+    }
   }
 
   /**
    * This test is currently disabled (by using "ignore") because the method
    * "singletonSet" is not yet implemented and the test would fail.
-   * 
+   *
    * Once you finish your implementation of "singletonSet", exchange the
    * function "ignore" by "test".
    */
@@ -110,34 +120,46 @@ class SetAsFunctionSuite extends FunSuite with Matchers {
 
   test("should map set elements") {
     new TestSets {
-      val mappedS1 = map(s1, x => x+100)
+      val mappedS1 = map(s1, x => x + 100)
       contains(mappedS1, 101) shouldBe true
 
-      val mappedS2 = map(s2, x => x*x)
+      val mappedS2 = map(s2, x => x * x)
       contains(mappedS2, 4) shouldBe true
     }
   }
 
   test("should test forAll") {
     new TestSets {
-      forall(s1, x => x==1) shouldBe true
-      forall(s2, x => x%2==0) shouldBe true
-      forall(s3, x => x%2==1) shouldBe true
+      forall(s1, x => x == 1) shouldBe true
+      forall(s2, x => x % 2 == 0) shouldBe true
+      forall(s3, x => x % 2 == 1) shouldBe true
     }
   }
 
   test("should test exists") {
     new TestSets {
-      val s = union(union(s1,s2),s3)
-      exists(s, x=>x%5==0) shouldBe false
-      exists(s, x=>x%2==0) shouldBe true
+      val s = union(union(s1, s2), s3)
+      exists(s, x => x % 5 == 0) shouldBe false
+      exists(s, x => x % 2 == 0) shouldBe true
     }
   }
 
   test("should test intersection") {
     new TestSets {
-      contains(intersect(s1,s2),1) shouldBe false
-      contains(intersect(union(s1,s2),union(s2,s3)),2) shouldBe true
+      contains(intersect(s1, s2), 1) shouldBe false
+      contains(intersect(union(s1, s2), union(s2, s3)), 2) shouldBe true
+    }
+  }
+
+  test("diff of {1,3,4,5,7,1000} and {1,2,3,4}") {
+    new TestSets {
+      val a = setOf(1,3,4,5,7,1000)
+      val b = setOf(1,2,3,4)
+
+      Array(5,7,1000).forall{element => contains(diff(a,b), element)} shouldBe true
+      Array(1,3,4).forall{element => contains(diff(a,b), element)} shouldBe false
+
+
     }
   }
 }
