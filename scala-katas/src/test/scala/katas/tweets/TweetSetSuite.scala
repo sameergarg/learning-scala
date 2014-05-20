@@ -83,4 +83,9 @@ class TweetSetSuite extends FunSuite with Matchers {
       assert(trends.head.user == "a" || trends.head.user == "b")
     }
   }
+
+  test("googleTweets") {
+    val tweets: TweetSet = TweetReader.allTweets
+    tweets should not be('empty)
+  }
 }
