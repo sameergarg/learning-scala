@@ -92,21 +92,13 @@ abstract class TweetSet {
       }
     }*/
 
-    def loop(tweetSet: TweetSet, acc: TweetList): TweetList = tweetSet match {
-      case _: Empty => {
-        acc
-      }
+    this match {
+      case _: Empty => Nil
       case _: NonEmpty => {
-        val mostRetweetedTweet = tweetSet.mostRetweeted
-        loop(tweetSet.remove(mostRetweetedTweet), new Cons(mostRetweetedTweet, acc))
+        val mostRetweetedTweet = mostRetweeted
+        new Cons(mostRetweetedTweet, this.remove(mostRetweetedTweet).descendingByRetweet)
       }
     }
-
-    loop(this, Nil)
-
-
-
-
   }
 
 
