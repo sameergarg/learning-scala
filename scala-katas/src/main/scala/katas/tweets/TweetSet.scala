@@ -1,6 +1,10 @@
 package katas.tweets
 
 import sun.util.EmptyListResourceBundle
+import scala.math._
+import java.util.NoSuchElementException
+import scala.NoSuchElementException
+import com.apple.jobjc.NativeObjectLifecycleManager.Nothing
 
 /**
  * A class to represent tweets.
@@ -8,7 +12,7 @@ import sun.util.EmptyListResourceBundle
 class Tweet(val user: String, val text: String, val retweets: Int) {
   override def toString: String =
     "User: " + user + "\n" +
-    "Text: " + text + " [" + retweets + "]"
+      "Text: " + text + " [" + retweets + "]"
 }
 
 /**
@@ -56,7 +60,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-   def union(that: TweetSet): TweetSet ;
+  def union(that: TweetSet): TweetSet;
 
   /**
    * Returns the tweet from this set which has the greatest retweet count.
@@ -67,7 +71,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def mostRetweeted: Tweet = ???
+  def mostRetweeted: Tweet;
 
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -78,7 +82,32 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList = {
+
+    /*def loop(tweetSet: TweetSet, acc: TweetList): TweetList = tweetSet match {
+      case _: Empty => acc
+      case _: NonEmpty => {
+        val mostRetweetedTweet = tweetSet.mostRetweeted
+        loop(tweetSet.remove(mostRetweetedTweet), new Cons(mostRetweetedTweet, acc))
+      }
+    }*/
+
+    def loop(tweetSet: TweetSet, acc: TweetList): TweetList = tweetSet match {
+      case _: Empty => {
+        acc
+      }
+      case _: NonEmpty => {
+        val mostRetweetedTweet = tweetSet.mostRetweeted
+        loop(tweetSet.remove(mostRetweetedTweet), new Cons(mostRetweetedTweet, acc))
+      }
+    }
+
+    loop(this, Nil)
+
+
+
+
+  }
 
 
   /**
@@ -133,16 +162,27 @@ class Empty extends TweetSet {
    * and be implemented in the subclasses?
    */
   override def union(that: TweetSet): TweetSet = that
+
+  /**
+   * Returns the tweet from this set which has the greatest retweet count.
+   *
+   * Calling `mostRetweeted` on an empty set should throw an exception of
+   * type `java.util.NoSuchElementException`.
+   *
+   * Question: Should we implment this method here, or should it remain abstract
+   * and be implemented in the subclasses?
+   */
+  override def mostRetweeted: Tweet = throw new NoSuchElementException
 }
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
 
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
-    if(p(elem))
-      right.filterAcc(p, left.filterAcc(p,acc.incl(elem)))
+    if (p(elem))
+      right.filterAcc(p, left.filterAcc(p, acc.incl(elem)))
     else
-      right.filterAcc(p, left.filterAcc(p,acc))
+      right.filterAcc(p, left.filterAcc(p, acc))
   }
 
 
@@ -181,12 +221,58 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   override def union(that: TweetSet): TweetSet = {
     that.union(left).union(right).incl(elem)
   }
+
+  /**
+   * Returns the tweet from this set which has the greatest retweet count.
+   *
+   * Calling `mostRetweeted` on an empty set should throw an exception of
+   * type `java.util.NoSuchElementException`.
+   *
+   */
+  override def mostRetweeted: Tweet = {
+
+    /*val popularLeft = mostPopular(elem, left)
+    val popularRight = mostPopular(elem, right)
+
+
+    def mostPopular(tweet: Tweet, tweetSet: TweetSet): Tweet = tweetSet match {
+
+      case tweetSet if(right.mostRetweeted.retweets < tweet.retweets) => mostPopular(tweet, left)
+      case tweetSet if(left.mostRetweeted.retweets > tweet.retweets) => mostPopular(tweet, right)
+      case tweetSet: Empty => throw new NoSuchElementException
+      case nse: NoSuchElementException  => tweet
+    }*/
+
+    var popular = elem
+    try {
+      if (left.mostRetweeted.retweets > elem.retweets) {
+        popular = left.mostRetweeted
+      }
+    }
+    catch {
+      case nse: NoSuchElementException => popular
+    }
+
+    try {
+      if (right.mostRetweeted.retweets > popular.retweets) {
+        popular = right.mostRetweeted
+      }
+    }
+    catch {
+      case nse: NoSuchElementException => popular
+    }
+
+    popular
+  }
 }
 
 trait TweetList {
   def head: Tweet
+
   def tail: TweetList
+
   def isEmpty: Boolean
+
   def foreach(f: Tweet => Unit): Unit =
     if (!isEmpty) {
       f(head)
@@ -196,7 +282,9 @@ trait TweetList {
 
 object Nil extends TweetList {
   def head = throw new java.util.NoSuchElementException("head of EmptyList")
+
   def tail = throw new java.util.NoSuchElementException("tail of EmptyList")
+
   def isEmpty = true
 }
 

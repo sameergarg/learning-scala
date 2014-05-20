@@ -1,12 +1,12 @@
 package katas.tweets
 
-import org.scalatest.FunSuite
+import org.scalatest.{Matchers, FunSuite}
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class TweetSetSuite extends FunSuite {
+class TweetSetSuite extends FunSuite with Matchers {
   trait TestSets {
     val set1 = new Empty
     val set2 = set1.incl(new Tweet("a", "a body", 20))
@@ -59,6 +59,20 @@ class TweetSetSuite extends FunSuite {
   test("union: with empty set (2)") {
     new TestSets {
       assert(size(set1.union(set5)) === 4)
+    }
+  }
+
+  test("mostretweeted") {
+    new TestSets {
+      set3.mostRetweeted.retweets shouldBe 20
+      (new Empty)
+        .incl(new Tweet("a", "a body", 10))
+        .incl(new Tweet("b", "b body", 50))
+        .incl(new Tweet("c", "c body", 70))
+        .incl(new Tweet("d", "d body", 0))
+        .incl(new Tweet("e", "e body", 100))
+        .incl(new Tweet("f", "f body", 30))
+        .mostRetweeted.retweets shouldBe 100
     }
   }
 
