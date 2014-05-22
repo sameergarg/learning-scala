@@ -85,7 +85,8 @@ class TweetSetSuite extends FunSuite with Matchers {
   }
 
   test("googleTweets") {
-    val tweets: TweetSet = TweetReader.allTweets
+    val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
+    val tweets = TweetReader.allTweets.filter(t=>google.exists(keyword =>t.text.contains(keyword)))
     tweets should not be('empty)
   }
 }

@@ -5,6 +5,8 @@ import scala.math._
 import java.util.NoSuchElementException
 import scala.NoSuchElementException
 import com.apple.jobjc.NativeObjectLifecycleManager.Nothing
+import scala.collection.immutable.Stream.Empty
+import scala.annotation.tailrec
 
 /**
  * A class to represent tweets.
@@ -37,7 +39,7 @@ class Tweet(val user: String, val text: String, val retweets: Int) {
  * [1] http://en.wikipedia.org/wiki/Binary_search_tree
  */
 abstract class TweetSet {
-
+   def isEmpty : Boolean
   /**
    * This method takes a predicate and returns a subset of all the elements
    * in the original set for which the predicate is true.
@@ -82,16 +84,14 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def descendingByRetweet: TweetList = {
-
-    this match {
+  def descendingByRetweet: TweetList = this match {
       case _: Empty => Nil
       case _: NonEmpty => {
         val mostRetweetedTweet = mostRetweeted
         new Cons(mostRetweetedTweet, this.remove(mostRetweetedTweet).descendingByRetweet)
       }
     }
-  }
+
 
 
   /**
@@ -157,16 +157,50 @@ class Empty extends TweetSet {
    * and be implemented in the subclasses?
    */
   override def mostRetweeted: Tweet = throw new NoSuchElementException
+
+  override def isEmpty: Boolean = true
 }
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
-
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
-    if (p(elem))
-      right.filterAcc(p, left.filterAcc(p, acc.incl(elem)))
+    /*if (p(elem))
+      left.filterAcc(p, right.filterAcc(p, acc.incl(elem)))
     else
-      right.filterAcc(p, left.filterAcc(p, acc))
+      right.filterAcc(p, left.filterAcc(p, acc))*/
+
+
+    /*
+    def loop(p: Tweet => Boolean, acc: TweetSet, filtered: TweetSet): TweetSet = acc match {
+      case _:Empty => filtered
+      case ne:NonEmpty => {
+        if(p(elem)) filtered.incl(elem)
+        loop(p, acc.remove(elem), filtered)
+      }
+    }
+
+    loop(p, acc, new Empty)*/
+    /*acc match {
+      case _:Empty => new Empty
+      case ne:NonEmpty => {
+        if(p(elem)) filterAcc(p,acc.remove(elem)).incl(elem)
+        else filterAcc(p,acc.remove(elem))
+
+      }*/
+
+    /*if (p(elem)) filterAcc(p, acc.remove(elem)).incl(elem)
+    else filterAcc(p, acc.remove(elem))*/
+
+    /*this match {
+      case _: Empty => acc
+      case _:NonEmpty => {
+        val removed = remove(elem)
+        if(p(elem)) removed.filterAcc(p, acc.incl(elem)) else removed.filterAcc(p, acc)
+      }
+    }*/
+
+    left.filterAcc(p, right.filterAcc(p, if (p(elem)) acc incl(elem) else acc ))
+
   }
 
 
@@ -203,7 +237,30 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
    * and be implemented in the subclasses?
    */
   override def union(that: TweetSet): TweetSet = {
-    that.union(left).union(right).incl(elem)
+    //that.union(left).union(right).incl(elem)
+    //    that.union(left.union(right)).incl(elem)
+    //left.union(right).union(that).incl(elem)
+    //left.union(that).union(right).incl(elem)
+
+
+    var combined: TweetSet = this
+    that.foreach {t => combined = combined.incl(t)}
+    combined
+
+    /*@tailrec
+    def loop (unionSet: TweetSet, acc: TweetSet): TweetSet = unionSet match {
+      case _: Empty => acc
+      case ne: NonEmpty => {
+        loop(unionSet.remove(ne.elem),acc.incl(ne.elem))
+      }
+    }
+
+    loop(that,this)*/
+    /*if(this.isEmpty){
+      that
+    }else {
+      remove(elem).union(that.incl(elem))
+    }*/
   }
 
   /**
@@ -226,6 +283,8 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
       case (_:NonEmpty,_:NonEmpty) => max(right.mostRetweeted, max(left.mostRetweeted, elem))
     }
   }
+
+  override def isEmpty: Boolean = false
 }
 
 trait TweetList {
