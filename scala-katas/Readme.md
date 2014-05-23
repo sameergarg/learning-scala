@@ -67,3 +67,7 @@ Be attentive in the video lectures on how to write anonymous functions in Scala.
 Sets are represented as functions. Think about what it means for an element to belong to a set, in terms of function evaluation. For example, how do you represent a set that contains all numbers between 1 and 100?
 Most of the solutions for this assignment can be written as one-liners. If you have more, you probably need to rethink your solution. In other words, this assignment needs more thinking (whiteboard, pen and paper) than coding ;-).
 If you are having some trouble with terminology, have a look at the glossary.
+
+Huffman
+------
+
