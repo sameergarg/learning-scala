@@ -1,6 +1,6 @@
 package katas.patmat
 
-import org.scalatest.FunSuite
+import org.scalatest.{Matchers, FunSuite}
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -8,7 +8,7 @@ import org.scalatest.junit.JUnitRunner
 import katas.patmat.Huffman._
 
 @RunWith(classOf[JUnitRunner])
-class HuffmanSuite extends FunSuite {
+class HuffmanSuite extends FunSuite with Matchers {
   trait TestTrees {
     val t1 = Fork(Leaf('a',2), Leaf('b',3), List('a','b'), 5)
     val t2 = Fork(Fork(Leaf('a',2), Leaf('b',3), List('a','b'), 5), Leaf('d',4), List('a','b','d'), 9)
@@ -31,8 +31,11 @@ class HuffmanSuite extends FunSuite {
   }
 
    test("times chars") {
-     assert(times(List('a', 'b')) === List(('a',1),('b',1)))
-     assert(times(List('a', 'b', 'a')) === List(('a',2),('b',1)))
+     times(List('a', 'b')) should contain('a',1)
+     times(List('a', 'b')) should contain('b',1)
+     times(List('a', 'b','a')) should contain('a',2)
+     times(List('a', 'b','a')) should contain('b',1)
+
    }
 
   test("makeOrderedLeafList for some frequency table") {
@@ -42,6 +45,16 @@ class HuffmanSuite extends FunSuite {
   test("combine of some leaf list") {
     val leaflist = List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 4))
     assert(combine(leaflist) === List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)))
+  }
+
+  test("createCodeTree ") {
+    new TestTrees {
+      createCodeTree(string2Chars("aabbb")) should be(t1)
+      createCodeTree(string2Chars("ababb")) should be(t1)
+      createCodeTree(string2Chars("aabbbdddd")) should be(t2)
+      //createCodeTree(string2Chars("ababddddb")) should be(t2)
+    }
+
   }
 
   test("decode and encode a very short text should be identity") {
