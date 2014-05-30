@@ -47,12 +47,14 @@ class HuffmanSuite extends FunSuite with Matchers {
     assert(combine(leaflist) === List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)))
   }
 
+
+
   test("createCodeTree ") {
     new TestTrees {
       createCodeTree(string2Chars("aabbb")) should be(t1)
       createCodeTree(string2Chars("ababb")) should be(t1)
       createCodeTree(string2Chars("aabbbdddd")) should be(t2)
-      //createCodeTree(string2Chars("ababddddb")) should be(t2)
+      createCodeTree(string2Chars("ababddddb")) should be(t2)
     }
 
   }

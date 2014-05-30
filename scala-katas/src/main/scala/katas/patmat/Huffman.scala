@@ -89,7 +89,7 @@ object Huffman {
    * of a leaf is the frequency of the character.
    */
   def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
-    freqs.map(tuple => Leaf(tuple._1, tuple._2)) sortBy(_.weight)
+    freqs.map(tuple => Leaf(tuple._1, tuple._2)) sortBy(weight)
   }
 
   /**
@@ -112,7 +112,7 @@ object Huffman {
   def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
     case Nil => Nil
     case x::Nil => trees
-    case left::right::xs => makeCodeTree(left,right)::xs sortBy(weight)
+    case left::right::xs => makeCodeTree(left,right)::xs
   }
 
   /**
