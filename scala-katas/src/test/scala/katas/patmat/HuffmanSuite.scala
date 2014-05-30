@@ -47,8 +47,6 @@ class HuffmanSuite extends FunSuite with Matchers {
     assert(combine(leaflist) === List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)))
   }
 
-
-
   test("createCodeTree ") {
     new TestTrees {
       createCodeTree(string2Chars("aabbb")) should be(t1)
