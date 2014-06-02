@@ -65,6 +65,11 @@ class HuffmanSuite extends FunSuite with Matchers {
     println(decodedSecret)
   }
 
+  test("encode"){
+    encode(createCodeTree(string2Chars("aabbbdddd")))(List('d')) should be(List(1))
+    encode(createCodeTree(string2Chars("aabbbdddd")))(List('d','b')) should be(List(1,0,1))
+  }
+
   test("decode and encode a very short text should be identity") {
     new TestTrees {
       assert(decode(t1, encode(t1)("ab".toList)) === "ab".toList)
