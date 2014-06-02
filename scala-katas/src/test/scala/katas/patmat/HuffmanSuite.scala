@@ -6,6 +6,8 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 import katas.patmat.Huffman._
+import katas.patmat.Huffman.Leaf
+import katas.patmat.Huffman.Fork
 
 @RunWith(classOf[JUnitRunner])
 class HuffmanSuite extends FunSuite with Matchers {
@@ -75,4 +77,9 @@ class HuffmanSuite extends FunSuite with Matchers {
       assert(decode(t1, encode(t1)("ab".toList)) === "ab".toList)
     }
   }
+
+  test ("codeBits") {
+    codeBits(List[(Char, List[Bit])]('a',List(0,1,1,0)))('a') should be(List[Bit](0,1,1,0))
+  }
+
 }
