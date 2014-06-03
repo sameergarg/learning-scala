@@ -11,9 +11,10 @@ import katas.patmat.Huffman.Fork
 
 @RunWith(classOf[JUnitRunner])
 class HuffmanSuite extends FunSuite with Matchers {
+
   trait TestTrees {
-    val t1 = Fork(Leaf('a',2), Leaf('b',3), List('a','b'), 5)
-    val t2 = Fork(Fork(Leaf('a',2), Leaf('b',3), List('a','b'), 5), Leaf('d',4), List('a','b','d'), 9)
+    val t1 = Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5)
+    val t2 = Fork(Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5), Leaf('d', 4), List('a', 'b', 'd'), 9)
   }
 
   test("weight of a larger tree") {
@@ -24,7 +25,7 @@ class HuffmanSuite extends FunSuite with Matchers {
 
   test("chars of a larger tree") {
     new TestTrees {
-      assert(chars(t2) === List('a','b','d'))
+      assert(chars(t2) === List('a', 'b', 'd'))
     }
   }
 
@@ -32,21 +33,21 @@ class HuffmanSuite extends FunSuite with Matchers {
     assert(string2Chars("hello, world") === List('h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd'))
   }
 
-   test("times chars") {
-     times(List('a', 'b')) should contain('a',1)
-     times(List('a', 'b')) should contain('b',1)
-     times(List('a', 'b','a')) should contain('a',2)
-     times(List('a', 'b','a')) should contain('b',1)
+  test("times chars") {
+    times(List('a', 'b')) should contain('a', 1)
+    times(List('a', 'b')) should contain('b', 1)
+    times(List('a', 'b', 'a')) should contain('a', 2)
+    times(List('a', 'b', 'a')) should contain('b', 1)
 
-   }
+  }
 
   test("makeOrderedLeafList for some frequency table") {
-    assert(makeOrderedLeafList(List(('t', 2), ('e', 1), ('x', 3))) === List(Leaf('e',1), Leaf('t',2), Leaf('x',3)))
+    assert(makeOrderedLeafList(List(('t', 2), ('e', 1), ('x', 3))) === List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 3)))
   }
 
   test("combine of some leaf list") {
     val leaflist = List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 4))
-    assert(combine(leaflist) === List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)))
+    assert(combine(leaflist) === List(Fork(Leaf('e', 1), Leaf('t', 2), List('e', 't'), 3), Leaf('x', 4)))
   }
 
   test("createCodeTree ") {
@@ -59,17 +60,18 @@ class HuffmanSuite extends FunSuite with Matchers {
 
   }
 
-  test("decode"){
+  test("decode") {
     //decode(createCodeTree(string2Chars("AAAAAAAABBBCDEFGH")),List(one,zero,zero,zero,one,zero,one,zero)) should be(List("B","A","C"))
-    decode(createCodeTree(string2Chars("aabbbdddd")),List(1,0,1)) should be(List('d','b'))
-    decode(createCodeTree(string2Chars("aabbbdddd")),List(1,0,1)) should be(List('d','b'))
-    decode(createCodeTree(string2Chars("aabbbdddd")),List(1,0,1,0,1,1)) should be(List('d','b','b','d'))
+    decode(createCodeTree(string2Chars("aabbbdddd")), List(1, 0, 1)) should be(List('d', 'b'))
+    decode(createCodeTree(string2Chars("aabbbdddd")), List(1, 0, 1)) should be(List('d', 'b'))
+    decode(createCodeTree(string2Chars("aabbbdddd")), List(1, 0, 1, 0, 1, 1)) should be(List('d', 'b', 'b', 'd'))
     println(decodedSecret)
   }
 
-  test("encode"){
+  test("encode") {
     encode(createCodeTree(string2Chars("aabbbdddd")))(List('d')) should be(List(1))
-    encode(createCodeTree(string2Chars("aabbbdddd")))(List('d','b')) should be(List(1,0,1))
+    encode(createCodeTree(string2Chars("aabbbdddd")))(List('a')) should be(List(0, 0))
+    encode(createCodeTree(string2Chars("aabbbdddd")))(List('d', 'b')) should be(List(1, 0, 1))
   }
 
   test("decode and encode a very short text should be identity") {
@@ -78,8 +80,33 @@ class HuffmanSuite extends FunSuite with Matchers {
     }
   }
 
-  test ("codeBits") {
-    codeBits(List[(Char, List[Bit])]('a',List(0,1,1,0)))('a') should be(List[Bit](0,1,1,0))
+  test("codeBits") {
+    val codeTable = codeBits(List[(Char, List[Bit])](('a', List(0, 1, 1, 0)), ('b', List(1, 1, 1, 1))))(_)
+    codeTable('a') should be(List[Bit](0, 1, 1, 0))
+    codeTable('c') should be(Nil)
+  }
+
+  test("mergeCodeTables") {
+    mergeCodeTables(List(('a', List(0, 1, 1, 0))), List(('a', List(0, 1, 1, 0)))) should be(List(('a', List(0, 1, 1, 0))))
+    mergeCodeTables(List(('a', List(0, 1, 1, 0))), List(('b', List(1, 1, 1, 1)))) should be(List(('a', List(0, 1, 1, 0)), (('b', List(1, 1, 1, 1)))))
+    mergeCodeTables(List(('a', List(0, 1, 1, 0)), ('c', List(1))), List(('b', List(1, 1, 1, 1)), ('c', List(1)))) should be(List(
+      ('a', List(0, 1, 1, 0)),
+      ('b', List(1, 1, 1, 1)),
+      ('c', List(1))
+    ))
+  }
+
+  test("convert") {
+    new TestTrees {
+      convert(t1) should be(List(('a', List(0)), ('b', List(1))))
+      convert(t2) should be(List(('b', List(0, 1)), ('a', List(0, 0)), ('d', List(1))))
+    }
+  }
+
+  test("quickEncode") {
+    new TestTrees {
+      quickEncode(t2)(string2Chars("aaabbbddd")) should be(List(0,0,0,0,0,0,0,1,0,1,0,1,1,1,1))
+    }
   }
 
 }
