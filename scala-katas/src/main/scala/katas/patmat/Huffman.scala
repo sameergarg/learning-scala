@@ -156,78 +156,35 @@ object Huffman {
    * This function decodes the bit sequence `bits` using the code tree `tree` and returns
    * the resulting list of characters.
    */
-/*  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
-    var decodedChars = List[Char]()
-    var decodedTree = tree
-    for (bit <- bits) {
-      decodedTree = navigate(bit, decodedTree)
 
-      bit match {
-        case 0 => {
-          decodedTree match {
-            case l: Leaf => {
-              decodedChars = decodedChars :+ l.char
-              decodedTree = tree
+  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
 
-            }
-            case f: Fork => {
-              decodedChars
-            }
-          }
-        }
-        case 1 => {
-          decodedTree match {
-            case l: Leaf => {
-              decodedChars = decodedChars :+ l.char
-              decodedTree = tree
-            }
-            case f: Fork => {
-              decodedChars
-            }
-          }
+    def decodeReducedTree(reducedTree: CodeTree, bits: List[Bit]): List[Char] = bits match {
+      case Nil => Nil
+      case x :: xs => {
+        navigate(reducedTree, x) match {
+          case leaf: Leaf => chars(leaf) ::: decode(tree, xs)
+          case fork: Fork => decodeReducedTree(fork, xs)
         }
       }
     }
 
-    def navigate(bit: Bit, tree: CodeTree): CodeTree = bit match {
+    def navigate(tree: CodeTree, bit: Bit) = bit match {
       case 0 => tree match {
-        case l: Leaf => l
-        case f: Fork => f.left
+        case leaf: Leaf => leaf
+        case fork: Fork => fork.left
       }
       case 1 => tree match {
-        case l: Leaf => l
-        case f: Fork => f.right
+        case leaf: Leaf => leaf
+        case fork: Fork => fork.right
       }
     }
-    decodedChars
 
-  }*/
-
-  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = bits match {
-    case Nil => Nil
-    case 0::xs => navigate(tree,0) match {
-      case leaf:Leaf => chars(leaf) ::: decode(tree, xs)
-      case fork:Fork => decode(fork, xs)
-    }
-    case 1::xs => navigate(tree,1) match {
-      case leaf:Leaf => chars(leaf) ::: decode(tree, xs)
-      case fork:Fork => decode(fork, xs)
-    }
-
-
-
+    decodeReducedTree(tree, bits)
   }
+  
 
-  def navigate(tree: CodeTree, bit:Bit)= bit match {
-    case 0 => tree match {
-      case leaf:Leaf => leaf
-      case fork:Fork => fork.left
-    }
-    case 1 => tree match {
-      case leaf:Leaf => leaf
-      case fork:Fork => fork.right
-    }
-  }
+
 
 
   /**
@@ -257,7 +214,7 @@ object Huffman {
    */
   def encode(tree: CodeTree)(text: List[Char]): List[Bit] = text match {
     case Nil => Nil
-    case x::xs => encodeChar(tree, x, Nil) ::: encode(tree)(xs)
+    case x :: xs => encodeChar(tree, x, Nil) ::: encode(tree)(xs)
 
   }
 
@@ -281,7 +238,7 @@ object Huffman {
    */
   def codeBits(table: CodeTable)(char: Char): List[Bit] = table match {
     case Nil => Nil
-    case x :: xs => if(x._1==char) x._2 else codeBits(xs)(char)
+    case x :: xs => if (x._1 == char) x._2 else codeBits(xs)(char)
   }
 
   /**
@@ -292,13 +249,13 @@ object Huffman {
    * a valid code tree that can be represented as a code table. Using the code tables of the
    * sub-trees, think of how to build the code table for the entire tree.
    */
-  def convert(tree: CodeTree): CodeTable =  {
+  def convert(tree: CodeTree): CodeTable = {
 
     def convertReducedTree(reducedTree: CodeTree): CodeTable = reducedTree match {
-      case leaf:Leaf => {
+      case leaf: Leaf => {
         List((leaf.char, encode(tree)(List(leaf.char))))
       }
-      case f:Fork => mergeCodeTables(convertReducedTree(f.left), convertReducedTree(f.right))
+      case f: Fork => mergeCodeTables(convertReducedTree(f.left), convertReducedTree(f.right))
     }
 
     convertReducedTree(tree)
@@ -311,10 +268,10 @@ object Huffman {
    */
   def mergeCodeTables(a: CodeTable, b: CodeTable): CodeTable = a match {
     case Nil => b
-    case x::xs => {
-        val alreadyCoded = codeBits(b)(x._1)
-        if(alreadyCoded == Nil) mergeCodeTables(xs, x::b) else mergeCodeTables(xs,b)
-      }
+    case x :: xs => {
+      val alreadyCoded = codeBits(b)(x._1)
+      if (alreadyCoded == Nil) mergeCodeTables(xs, x :: b) else mergeCodeTables(xs, b)
+    }
   }
 
   /**
@@ -326,9 +283,9 @@ object Huffman {
   def quickEncode(tree: CodeTree)(text: List[Char]): List[Bit] = {
     val codeTable = convert(tree)
 
-    def quick(reducedText: List[Char]) : List[Bit] = reducedText match {
+    def quick(reducedText: List[Char]): List[Bit] = reducedText match {
       case Nil => Nil
-      case x::xs => codeBits(codeTable)(x) ::: quick(xs)
+      case x :: xs => codeBits(codeTable)(x) ::: quick(xs)
     }
 
     quick(text)
