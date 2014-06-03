@@ -156,7 +156,7 @@ object Huffman {
    * This function decodes the bit sequence `bits` using the code tree `tree` and returns
    * the resulting list of characters.
    */
-  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
+/*  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
     var decodedChars = List[Char]()
     var decodedTree = tree
     for (bit <- bits) {
@@ -200,7 +200,35 @@ object Huffman {
       }
     }
     decodedChars
+
+  }*/
+
+  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = bits match {
+    case Nil => Nil
+    case 0::xs => navigate(tree,0) match {
+      case leaf:Leaf => chars(leaf) ::: decode(tree, xs)
+      case fork:Fork => decode(fork, xs)
+    }
+    case 1::xs => navigate(tree,1) match {
+      case leaf:Leaf => chars(leaf) ::: decode(tree, xs)
+      case fork:Fork => decode(fork, xs)
+    }
+
+
+
   }
+
+  def navigate(tree: CodeTree, bit:Bit)= bit match {
+    case 0 => tree match {
+      case leaf:Leaf => leaf
+      case fork:Fork => fork.left
+    }
+    case 1 => tree match {
+      case leaf:Leaf => leaf
+      case fork:Fork => fork.right
+    }
+  }
+
 
   /**
    * A Huffman coding tree for the French language.
@@ -227,24 +255,21 @@ object Huffman {
    * This function encodes `text` using the code tree `tree`
    * into a sequence of bits.
    */
-  def encode(tree: CodeTree)(text: List[Char]): List[Bit] = {
-    var encoded = List[Bit]()
-    for (char <- text) {
-      encoded = encoded ++: encodeChar(tree, char, Nil)
-    }
+  def encode(tree: CodeTree)(text: List[Char]): List[Bit] = text match {
+    case Nil => Nil
+    case x::xs => encodeChar(tree, x, Nil) ::: encode(tree)(xs)
 
-    def encodeChar(tree: CodeTree, char: Character, acc: List[Bit]): List[Bit] = tree match {
-      case l: Leaf => acc
-      case f: Fork => if (containsChar(f.left, char)) encodeChar(f.left, char, acc :+ 0) else encodeChar(f.right, char, acc :+ 1)
-    }
-
-    def containsChar(tree: CodeTree, char: Character): Boolean = tree match {
-      case l: Leaf => l.char == char
-      case f: Fork => f.chars.contains(char)
-    }
-    encoded
   }
 
+  private def encodeChar(tree: CodeTree, char: Character, acc: List[Bit]): List[Bit] = tree match {
+    case l: Leaf => acc
+    case f: Fork => if (containsChar(f.left, char)) encodeChar(f.left, char, acc :+ 0) else encodeChar(f.right, char, acc :+ 1)
+  }
+
+  private def containsChar(tree: CodeTree, char: Character): Boolean = tree match {
+    case l: Leaf => l.char == char
+    case f: Fork => f.chars.contains(char)
+  }
 
   // Part 4b: Encoding using code table
 
