@@ -183,10 +183,6 @@ object Huffman {
     decodeReducedTree(tree, bits)
   }
   
-
-
-
-
   /**
    * A Huffman coding tree for the French language.
    * Generated from the data given at

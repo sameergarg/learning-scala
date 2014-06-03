@@ -61,7 +61,6 @@ class HuffmanSuite extends FunSuite with Matchers {
   }
 
   test("decode") {
-    //decode(createCodeTree(string2Chars("AAAAAAAABBBCDEFGH")),List(one,zero,zero,zero,one,zero,one,zero)) should be(List("B","A","C"))
     decode(createCodeTree(string2Chars("aabbbdddd")), List(1)) should be(List('d'))
     decode(createCodeTree(string2Chars("aabbbdddd")), List(0,0)) should be(List('a'))
     decode(createCodeTree(string2Chars("aabbbdddd")), List(0,1)) should be(List('b'))
