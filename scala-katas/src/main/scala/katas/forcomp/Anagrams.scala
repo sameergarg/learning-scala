@@ -87,8 +87,26 @@ object Anagrams {
    *
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
+    *  type Occurrences = List[(Char, Int)]
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = ???
+  def combinations(occurrences: Occurrences): List[Occurrences] = {
+
+    val elements = for {
+      (char, occurrence) <- occurrences
+      subsetOccurrence <- 1 to occurrence
+
+    } yield (char, subsetOccurrence)
+
+    val combis = for {
+      element <- elements
+      index <- 1 to elements.length
+    } yield(element::elements.drop(index).filter(_._1!=element._1))
+
+    println(combis.distinct)
+    combis
+
+
+  }
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
    * 
