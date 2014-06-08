@@ -114,7 +114,11 @@ object Anagrams {
   * Note: the resulting value is an occurrence - meaning it is sorted
   * and has no zero-entries.
   */
-def subtract (x: Occurrences, y: Occurrences): Occurrences = ???
+def subtract(x: Occurrences, y: Occurrences): Occurrences = {
+  require(y.forall(itemY => x.exists(itemX => itemX._1 == itemY._1 && itemX._2 >= itemY._2)))
+
+  x.diff(y)
+}
 
 /** Returns a list of all anagram sentences of the given sentence.
   *
@@ -156,6 +160,14 @@ def subtract (x: Occurrences, y: Occurrences): Occurrences = ???
   *
   * Note: There is only one anagram of an empty sentence.
   */
-def sentenceAnagrams (sentence: Sentence): List[Sentence] = ???
+def sentenceAnagrams (sentence: Sentence): List[Sentence] = sentence match {
+
+  case Nil => Nil
+  case _ => {
+    val occurrences: Occurrences = sentenceOccurrences(sentence)
+
+  }
+
+}
 
 }
