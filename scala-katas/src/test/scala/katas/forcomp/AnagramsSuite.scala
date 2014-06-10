@@ -107,6 +107,14 @@ class AnagramsSuite extends FunSuite with Matchers {
       List("Linux", "rulez")
     )
     assert(sentenceAnagrams(sentence).toSet === anas.toSet)
-  }  
+  }
+
+  test("sentence anagrams: is") {
+    val sentence = List("is")
+    val anas = List(
+      List("is")
+    )
+    assert(sentenceAnagrams(sentence).toSet === anas.toSet)
+  }
 
 }

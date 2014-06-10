@@ -110,15 +110,10 @@ object Huffman {
    * unchanged.
    */
   def combine(trees: List[CodeTree]): List[CodeTree] = {
-
-    def merge() = trees match {
-      case Nil => Nil
-      case x :: Nil => trees
+    (trees match {
       case left :: right :: xs => makeCodeTree(left, right) :: xs
-    }
-
-    //merge
-    merge.sortBy(weight(_))
+      case _ => trees
+    }).sortBy(weight(_))
   }
 
   /**

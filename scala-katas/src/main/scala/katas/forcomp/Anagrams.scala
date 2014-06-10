@@ -2,6 +2,7 @@ package katas.forcomp
 
 import katas.common._
 import com.apple.jobjc.NativeObjectLifecycleManager.Nothing
+import scala.None
 
 object Anagrams {
 
@@ -64,7 +65,7 @@ object Anagrams {
 
   /** Returns all the anagrams of a given word. */
   def wordAnagrams(word: Word): List[Word] = {
-    dictionaryByOccurrences.get(wordOccurrences(word)).getOrElse(Nil)
+    dictionaryByOccurrences.getOrElse(wordOccurrences(word),Nil)
   }
 
   /** Returns the list of all subsets of the occurrence list.
@@ -90,84 +91,136 @@ object Anagrams {
     * in the example above could have been displayed in some other order.
     * type Occurrences = List[(Char, Int)]
     */
-  def combinations(occurrences: Occurrences): List[Occurrences] = {
+/*  def combinations(occurrences: Occurrences): List[Occurrences] = {
 
     def filterDupes: (List[(Char, Int)]) => Boolean = {
-      listOfTuples => listOfTuples.groupBy { y => y._1}.mapValues(_.size).forall(_._2<=1)
+      listOfTuples => listOfTuples.groupBy { y => y._1}.mapValues(_.size).forall(_._2 <= 1)
     }
 
     val elements = for {
       occurrence <- occurrences
       subsetOccurrence <- 1 to occurrence._2
     } yield (occurrence._1, subsetOccurrence)
-    val subsets = elements.toSet.subsets.filter(_.size>0).map(_.toList).toList
-    subsets.filter{filterDupes}:::List(List())
- }
+    val subsets = elements.toSet.subsets.filter(_.size > 0).map(_.toList).toList
+    subsets.filter {
+      filterDupes
+    } ::: List(List())
+  }*/
 
-/** Subtracts occurrence list `y` from occurrence list `x`.
-  *
-  * The precondition is that the occurrence list `y` is a subset of
-  * the occurrence list `x` -- any character appearing in `y` must
-  * appear in `x`, and its frequency in `y` must be smaller or equal
-  * than its frequency in `x`.
-  *
-  * Note: the resulting value is an occurrence - meaning it is sorted
-  * and has no zero-entries.
-  */
-def subtract(x: Occurrences, y: Occurrences): Occurrences = {
-  require(y.forall(itemY => x.exists(itemX => itemX._1 == itemY._1 && itemX._2 >= itemY._2)))
+  /** Subtracts occurrence list `y` from occurrence list `x`.
+    *
+    * The precondition is that the occurrence list `y` is a subset of
+    * the occurrence list `x` -- any character appearing in `y` must
+    * appear in `x`, and its frequency in `y` must be smaller or equal
+    * than its frequency in `x`.
+    *
+    * Note: the resulting value is an occurrence - meaning it is sorted
+    * and has no zero-entries.
+    */
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = {
+    if (y.forall(itemY => x.exists(itemX => itemX._1 == itemY._1 && itemX._2 >= itemY._2)))
+      x.diff(y)
+    else x
+  }
 
-  x.diff(y)
-}
+  /** Returns a list of all anagram sentences of the given sentence.
+    *
+    * An anagram of a sentence is formed by taking the occurrences of all the characters of
+    * all the words in the sentence, and producing all possible combinations of words with those characters,
+    * such that the words have to be from the dictionary.
+    *
+    * The number of words in the sentence and its anagrams does not have to correspond.
+    * For example, the sentence `List("I", "love", "you")` is an anagram of the sentence `List("You", "olive")`.
+    *
+    * Also, two sentences with the same words but in a different order are considered two different anagrams.
+    * For example, sentences `List("You", "olive")` and `List("olive", "you")` are different anagrams of
+    * `List("I", "love", "you")`.
+    *
+    * Here is a full example of a sentence `List("Yes", "man")` and its anagrams for our dictionary:
+    *
+    * List(
+    * List(en, as, my),
+    * List(en, my, as),
+    * List(man, yes),
+    * List(men, say),
+    * List(as, en, my),
+    * List(as, my, en),
+    * List(sane, my),
+    * List(Sean, my),
+    * List(my, en, as),
+    * List(my, as, en),
+    * List(my, sane),
+    * List(my, Sean),
+    * List(say, men),
+    * List(yes, man)
+    * )
+    *
+    * The different sentences do not have to be output in the order shown above - any order is fine as long as
+    * all the anagrams are there. Every returned word has to exist in the dictionary.
+    *
+    * Note: in case that the words of the sentence are in the dictionary, then the sentence is the anagram of itself,
+    * so it has to be returned in this list.
+    *
+    * Note: There is only one anagram of an empty sentence.
+    */
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
 
-/** Returns a list of all anagram sentences of the given sentence.
-  *
-  * An anagram of a sentence is formed by taking the occurrences of all the characters of
-  * all the words in the sentence, and producing all possible combinations of words with those characters,
-  * such that the words have to be from the dictionary.
-  *
-  * The number of words in the sentence and its anagrams does not have to correspond.
-  * For example, the sentence `List("I", "love", "you")` is an anagram of the sentence `List("You", "olive")`.
-  *
-  * Also, two sentences with the same words but in a different order are considered two different anagrams.
-  * For example, sentences `List("You", "olive")` and `List("olive", "you")` are different anagrams of
-  * `List("I", "love", "you")`.
-  *
-  * Here is a full example of a sentence `List("Yes", "man")` and its anagrams for our dictionary:
-  *
-  * List(
-  * List(en, as, my),
-  * List(en, my, as),
-  * List(man, yes),
-  * List(men, say),
-  * List(as, en, my),
-  * List(as, my, en),
-  * List(sane, my),
-  * List(Sean, my),
-  * List(my, en, as),
-  * List(my, as, en),
-  * List(my, sane),
-  * List(my, Sean),
-  * List(say, men),
-  * List(yes, man)
-  * )
-  *
-  * The different sentences do not have to be output in the order shown above - any order is fine as long as
-  * all the anagrams are there. Every returned word has to exist in the dictionary.
-  *
-  * Note: in case that the words of the sentence are in the dictionary, then the sentence is the anagram of itself,
-  * so it has to be returned in this list.
-  *
-  * Note: There is only one anagram of an empty sentence.
-  */
-def sentenceAnagrams (sentence: Sentence): List[Sentence] = sentence match {
+    def anagrams(occurrences: Occurrences): List[Sentence] = {
+      if(occurrences.isEmpty) List(List())
+      else for {
+        combination <- combinations(occurrences)
+        if(dictionaryByOccurrences.contains(combination))
+        words <- dictionaryByOccurrences(combination)
+        rest <- anagrams(subtract(occurrences, combination))
+      } yield words::rest
+    }
 
-  case Nil => Nil
-  case _ => {
-    val occurrences: Occurrences = sentenceOccurrences(sentence)
+    anagrams(sentenceOccurrences(sentence))
 
   }
 
-}
+  /*def sentenceAnagrams(sentence: Sentence): List[Sentence] = sentence match {
+    case Nil => List(Nil)
+    case _ => val allOccurrencesInSentence = occurrencesInSentence(sentence)
+      sentences(allOccurrencesInSentence, combinations(allOccurrencesInSentence), Nil)
+  }
+
+  private def sentences(occurrencesInSentence: Occurrences, subsetCombinations: List[Occurrences], acc:List[Sentence]): List[Sentence] = subsetCombinations match {
+    case Nil => acc
+    case x :: xs => {
+       anagramsForSubset(occurrencesInSentence, x, combinations(subtract(occurrencesInSentence,x)), Nil) match {
+         case Nil => sentences(occurrencesInSentence,xs, acc)
+         case sentence: Sentence => sentences(occurrencesInSentence,xs, sentence::acc)
+       }
+    }
+  }
+
+  def anagramsForElement(occurrencesInSentence: Occurrences, x: Occurrences) : Sentence = dictionaryByOccurrences.get(x) match {
+    case words: Some[List[Word]] =>
+      val remainingOccurrenceInSentence = subtract(occurrencesInSentence, x)
+      words.get ::: anagramsForSubset(remainingOccurrenceInSentence, combinations(remainingOccurrenceInSentence))
+    case _ => Nil
+  }
+
+  def anagramsForSubset(occurrencesInSentence: Occurrences, remaining:List[Occurrences]): Sentence = remaining match {
+    case Nil => Nil
+    case y::ys => anagramsForElement(subtract(occurrencesInSentence, y),y)
+
+  }
+
+
+
+
+
+
+  def combinations(occurrences: Occurrences): List[Occurrences] =
+    List() :: (for {
+      (char, max) <- occurrences
+      count       <- 1 to max
+      rest        <- combinations(occurrences.filter(pair => pair._1 > char))
+    } yield List((char, count)) ++ rest)
+
+  */
+
 
 }
