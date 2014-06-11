@@ -36,12 +36,12 @@ object Anagrams {
     * same character, and are represented as a lowercase character in the occurrence list.
     */
   def wordOccurrences(w: Word): Occurrences = {
-    (w groupBy (x => x.toLower) mapValues (_.length) toList) sortBy (_._1)
+    (w groupBy (x => x.toLower) mapValues (_.length) toList) sortWith(_._1 < _._1)
   }
 
   /** Converts a sentence into its character occurrence list. */
   def sentenceOccurrences(s: Sentence): Occurrences = {
-    wordOccurrences(s.reduceLeft(_ + _))
+    if(s.isEmpty) List() else wordOccurrences(s.reduceLeft(_ + _))
   }
 
   /** The `dictionaryByOccurrences` is a `Map` from different occurrences to a sequence of all
@@ -91,6 +91,14 @@ object Anagrams {
     * in the example above could have been displayed in some other order.
     * type Occurrences = List[(Char, Int)]
     */
+  def combinations(occurrences: Occurrences): List[Occurrences] = {
+    Nil :: (for{
+      (char, occurrence) <- occurrences
+      times <- 1 to occurrence
+
+      rest <-  combinations(occurrences.filter(pair => pair._1 > char))
+    } yield List((char, times)) ++ rest)
+  }
 /*  def combinations(occurrences: Occurrences): List[Occurrences] = {
 
     def filterDupes: (List[(Char, Int)]) => Boolean = {
@@ -170,9 +178,9 @@ object Anagrams {
       else for {
         combination <- combinations(occurrences)
         if(dictionaryByOccurrences.contains(combination))
-        words <- dictionaryByOccurrences(combination)
-        rest <- anagrams(subtract(occurrences, combination))
-      } yield words::rest
+        word <- dictionaryByOccurrences(combination)
+        rest <- anagrams(subtract(occurrences, wordOccurrences(word)))
+      } yield word::rest
     }
 
     anagrams(sentenceOccurrences(sentence))
