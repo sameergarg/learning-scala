@@ -99,21 +99,6 @@ object Anagrams {
       rest <-  combinations(occurrences.filter(pair => pair._1 > char))
     } yield List((char, times)) ++ rest)
   }
-/*  def combinations(occurrences: Occurrences): List[Occurrences] = {
-
-    def filterDupes: (List[(Char, Int)]) => Boolean = {
-      listOfTuples => listOfTuples.groupBy { y => y._1}.mapValues(_.size).forall(_._2 <= 1)
-    }
-
-    val elements = for {
-      occurrence <- occurrences
-      subsetOccurrence <- 1 to occurrence._2
-    } yield (occurrence._1, subsetOccurrence)
-    val subsets = elements.toSet.subsets.filter(_.size > 0).map(_.toList).toList
-    subsets.filter {
-      filterDupes
-    } ::: List(List())
-  }*/
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
     *
@@ -126,9 +111,7 @@ object Anagrams {
     * and has no zero-entries.
     */
   def subtract(x: Occurrences, y: Occurrences): Occurrences = {
-    if (y.forall(itemY => x.exists(itemX => itemX._1 == itemY._1 && itemX._2 >= itemY._2)))
-      x.diff(y)
-    else x
+    x.map{xs => (xs._1, xs._2 - y.find(_._1==xs._1).getOrElse((xs._1,0))._2)}.filter(_._2>0)
   }
 
   /** Returns a list of all anagram sentences of the given sentence.
@@ -186,49 +169,4 @@ object Anagrams {
     anagrams(sentenceOccurrences(sentence))
 
   }
-
-  /*def sentenceAnagrams(sentence: Sentence): List[Sentence] = sentence match {
-    case Nil => List(Nil)
-    case _ => val allOccurrencesInSentence = occurrencesInSentence(sentence)
-      sentences(allOccurrencesInSentence, combinations(allOccurrencesInSentence), Nil)
-  }
-
-  private def sentences(occurrencesInSentence: Occurrences, subsetCombinations: List[Occurrences], acc:List[Sentence]): List[Sentence] = subsetCombinations match {
-    case Nil => acc
-    case x :: xs => {
-       anagramsForSubset(occurrencesInSentence, x, combinations(subtract(occurrencesInSentence,x)), Nil) match {
-         case Nil => sentences(occurrencesInSentence,xs, acc)
-         case sentence: Sentence => sentences(occurrencesInSentence,xs, sentence::acc)
-       }
-    }
-  }
-
-  def anagramsForElement(occurrencesInSentence: Occurrences, x: Occurrences) : Sentence = dictionaryByOccurrences.get(x) match {
-    case words: Some[List[Word]] =>
-      val remainingOccurrenceInSentence = subtract(occurrencesInSentence, x)
-      words.get ::: anagramsForSubset(remainingOccurrenceInSentence, combinations(remainingOccurrenceInSentence))
-    case _ => Nil
-  }
-
-  def anagramsForSubset(occurrencesInSentence: Occurrences, remaining:List[Occurrences]): Sentence = remaining match {
-    case Nil => Nil
-    case y::ys => anagramsForElement(subtract(occurrencesInSentence, y),y)
-
-  }
-
-
-
-
-
-
-  def combinations(occurrences: Occurrences): List[Occurrences] =
-    List() :: (for {
-      (char, max) <- occurrences
-      count       <- 1 to max
-      rest        <- combinations(occurrences.filter(pair => pair._1 > char))
-    } yield List((char, count)) ++ rest)
-
-  */
-
-
 }
