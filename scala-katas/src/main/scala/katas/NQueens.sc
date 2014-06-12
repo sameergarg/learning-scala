@@ -33,6 +33,31 @@ object NQueens {
     }
   }
 
-  val positions = queens(4).toList
+  def display(queens: List[Int]) = {
+    val lines = for{
+      col <- queens
+    } yield Vector.fill(queens.length)("*").updated(col,"X").mkString
+    "\n" +lines.mkString("\n")
+  }
+  queens(4)
+  queens(4) map display
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
