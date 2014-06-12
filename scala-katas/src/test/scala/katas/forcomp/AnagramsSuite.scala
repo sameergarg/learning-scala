@@ -121,4 +121,20 @@ class AnagramsSuite extends FunSuite with Matchers {
     assert(sentenceAnagrams(sentence).toSet === anas.toSet)
   }
 
+  test("subtract: assessment - assess"){
+    val assessment = List(('a',1),('e',2),('m',1),('n',1),('s',4),('t',1))
+    val assess= List(('a',1),('e',1), ('s',4))
+    assert(subtract(assessment, assess) === List(('e',1),('m',1),('n',1), ('t',1)))
+  }
+
+  test("subtract: jimmy - my"){
+    val jimmy = List(('i',1),('j',1),('m',2),('y',1))
+    val my =List(('m',1),('y', 1))
+    assert(subtract(jimmy, my) === List(('i',1), ('j',1), ('m',1)))
+  }
+
+  test("sentenceOccurences:  Roberto Carlos"){
+    assert(sentenceOccurrences(List("Roberto", "Carlos")) === List(('a',1), ('b',1), ('c',1), ('e',1), ('l',1), ('o',3), ('r',3), ('s',1), ('t',1)))
+  }
+
 }
