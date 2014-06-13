@@ -1,5 +1,6 @@
 package katas
 
+import katas.functional.SetAsFunction
 import org.scalatest.{Matchers, FunSuite}
 
 import org.junit.runner.RunWith

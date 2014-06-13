@@ -1,6 +1,7 @@
-package katas
+package katas.recursion
 
 import scala.annotation.tailrec
+;
 
 object Recursion {
 

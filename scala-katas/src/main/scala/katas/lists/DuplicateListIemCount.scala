@@ -1,4 +1,4 @@
-package katas
+package katas.lists
 
 object DuplicateListIemCount {
 

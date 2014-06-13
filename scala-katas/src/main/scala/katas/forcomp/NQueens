@@ -1,4 +1,5 @@
 import java.lang.Math.abs
+
 object NQueens {
 
   def queens(n: Int): Set[List[Int]] = {

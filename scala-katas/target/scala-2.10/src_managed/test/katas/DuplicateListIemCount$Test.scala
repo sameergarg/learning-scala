@@ -1,7 +1,8 @@
 package katas
 
+import katas.lists.DuplicateListIemCount
 import org.scalatest.{Matchers, FunSuite}
-import katas.DuplicateListIemCount._
+import DuplicateListIemCount._
 
 class DuplicateListIemCount$Test extends FunSuite with Matchers {
 
