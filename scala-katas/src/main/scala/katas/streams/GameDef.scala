@@ -1,6 +1,6 @@
 package katas.streams
 
-import common._
+import katas.common._
 
 /**
  * This trait represents the layout and building blocks of the game

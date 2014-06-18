@@ -1,8 +1,8 @@
-package katas
+package katas.recursion
 
-import org.scalatest.{FunSuite, Matchers}
-import Recursion._
+import katas.recursion.Recursion._
 import org.scalatest.prop.TableDrivenPropertyChecks._
+import org.scalatest.{FunSuite, Matchers}
 
 
 /**

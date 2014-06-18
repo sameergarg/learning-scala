@@ -1,6 +1,6 @@
 package katas.streams
 
-import common._
+import katas.common._
 
 /**
  * This component implements the solver for the Bloxorz game

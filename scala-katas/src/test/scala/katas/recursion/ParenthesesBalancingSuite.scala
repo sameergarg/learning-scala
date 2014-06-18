@@ -1,8 +1,9 @@
-package katas
+package katas.recursion
 
-import org.scalatest.{Matchers, FunSuite}
+import katas.recursion.Recursion._
 import org.scalatest.prop.TableDrivenPropertyChecks._
-import Recursion._
+import org.scalatest.{FunSuite, Matchers}
+
 
 class ParenthesesBalancingSuite extends FunSuite with Matchers {
 
