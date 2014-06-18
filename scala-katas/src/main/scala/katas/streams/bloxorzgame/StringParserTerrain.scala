@@ -1,6 +1,4 @@
-package katas.streams
-
-import katas.common._
+package katas.streams.bloxorzgame
 
 /**
  * This component implements a parser to define terrains from a

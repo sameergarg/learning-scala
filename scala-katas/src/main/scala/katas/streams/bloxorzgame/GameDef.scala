@@ -1,6 +1,4 @@
-package katas.streams
-
-import katas.common._
+package katas.streams.bloxorzgame
 
 /**
  * This trait represents the layout and building blocks of the game

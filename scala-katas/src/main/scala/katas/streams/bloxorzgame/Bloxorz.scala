@@ -1,4 +1,4 @@
-package katas.streams
+package katas.streams.bloxorzgame
 
 /**
  * A main object that can be used to execute the Bloxorz solver

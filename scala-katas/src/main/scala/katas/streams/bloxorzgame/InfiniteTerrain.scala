@@ -1,4 +1,4 @@
-package katas.streams
+package katas.streams.bloxorzgame
 
 /**
  * This trait defines an infinite terrain, where the block can

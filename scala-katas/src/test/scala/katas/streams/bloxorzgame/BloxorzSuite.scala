@@ -1,4 +1,4 @@
-package katas.streams
+package katas.streams.bloxorzgame
 
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
