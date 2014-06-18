@@ -53,16 +53,16 @@ class Pouring(val capacity: Vector[Int]) {
     (for (from<-glasses; to <- glasses; if(from != to))yield Pour(from, to))
 
   //Paths
-  class Path(history:List[Action]) {
+  class Path(history:List[Action], val endState: State) {
 
-    def endState: State = (history foldRight initialState) ((action, state) => action change state)
+    //def endState: State = (history foldRight initialState) ((action, state) => action change state)
 
-    def add(action:Action) = new Path(action::history)
+    def add(action:Action) = new Path(action::history, action change endState)
 
     override def toString: String = (history.reverse mkString " ") + "--> End state:" + endState
   }
 
-  val initialPath = new Path(Nil)
+  val initialPath = new Path(Nil, initialState)
 
   def from(paths: Set[Path], explored:Set[State]): Stream[Set[Path]] =
     if(paths.isEmpty) Stream.empty
