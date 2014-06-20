@@ -140,7 +140,7 @@ trait GameDef {
      * Returns the list of positions reachable from the current block
      * which are inside the terrain.
      */
-    def legalNeighbors: List[(Block, Move)] = ???
+    def legalNeighbors: List[(Block, Move)] =
       for {
         neighbor <- neighbors
         if(terrain(neighbor._1.b1) && terrain(neighbor._1.b2))
