@@ -95,7 +95,6 @@ object Anagrams {
     Nil :: (for{
       (char, occurrence) <- occurrences
       times <- 1 to occurrence
-
       rest <-  combinations(occurrences.filter(pair => pair._1 > char))
     } yield List((char, times)) ++ rest)
   }
