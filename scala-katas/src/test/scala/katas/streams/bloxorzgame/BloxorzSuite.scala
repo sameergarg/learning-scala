@@ -21,45 +21,61 @@ class BloxorzSuite extends FunSuite {
         case Up => block.up
         case Down => block.down
       }
-    }
+      }
   }
 
   trait Level1 extends SolutionChecker {
-      /* terrain for level 1*/
+    /* terrain for level 1*/
 
     val level =
-    """ooo-------
-      |oSoooo----
-      |ooooooooo-
-      |-ooooooooo
-      |-----ooToo
-      |------ooo-""".stripMargin
+      """ooo-------
+        |oSoooo----
+        |ooooooooo-
+        |-ooooooooo
+        |-----ooToo
+        |------ooo-""".stripMargin
 
     val optsolution = List(Right, Right, Down, Right, Right, Right, Down)
   }
 
   test("terrain function level 1") {
     new Level1 {
-      assert(terrain(Pos(0,0)), "0,0")
-      assert(!terrain(Pos(4,11)), "4,11")
+      assert(terrain(Pos(0, 0)), "0,0")
+      assert(!terrain(Pos(4, 11)), "4,11")
     }
   }
 
   test("findChar level 1") {
     new Level1 {
-      assert(startPos == Pos(1,1))
+      assert(startPos == Pos(1, 1))
     }
   }
 
   test("Level 1 neighborsWithHistory") {
     new Level1 {
-      assert(neighborsWithHistory(Block(Pos(1,1),Pos(1,1)), List(Left,Up)).toSet == Set(
-        (Block(Pos(1,2),Pos(1,3)), List(Right,Left,Up)),
-        (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
+      assert(neighborsWithHistory(Block(Pos(1, 1), Pos(1, 1)), List(Left, Up)).toSet == Set(
+        (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
+        (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
       )
       )
     }
   }
+
+  test("new neighbors only") {
+    new Level1 {
+      assert(newNeighborsOnly(
+        Set(
+          (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
+          (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
+        ).toStream,
+
+        Set(Block(Pos(1, 2), Pos(1, 3)), Block(Pos(1, 1), Pos(1, 1)))
+      ) == Set(
+        (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
+      ).toStream)
+    }
+  }
+
   test("optimal solution for level 1") {
     new Level1 {
       assert(solve(solution) == Block(goal, goal))
@@ -71,4 +87,6 @@ class BloxorzSuite extends FunSuite {
       assert(solution.length == optsolution.length)
     }
   }
+
+
 }
