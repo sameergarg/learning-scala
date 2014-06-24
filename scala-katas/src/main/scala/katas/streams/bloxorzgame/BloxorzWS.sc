@@ -1,3 +1,4 @@
+import katas.streams.bloxorzgame.Bloxorz.{Level1, InfiniteLevel}
 import katas.streams.bloxorzgame.{StringParserTerrain}
 object test {
   val levelVector = Vector(Vector('-', '*', '*', 'S'), Vector('-','*', '*','-'), Vector('*', '*', 'T', '-'))
@@ -27,5 +28,8 @@ object test {
   tf(Pos(2, 3))
   startPos
   goal
+
+  InfiniteLevel.done(InfiniteLevel.Block(InfiniteLevel.Pos(5,8) ,InfiniteLevel.Pos(5,8)))
+  Level1.neighborsWithHistory(Level1.Block(Level1.Pos(1,1),Level1.Pos(1,1)), List(Level1.Left,Level1.Up))
 }
 

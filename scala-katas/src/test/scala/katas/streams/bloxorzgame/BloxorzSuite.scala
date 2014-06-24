@@ -1,5 +1,6 @@
 package katas.streams.bloxorzgame
 
+import katas.streams.bloxorzgame.Bloxorz.Level1
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
@@ -50,6 +51,15 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
+  test("Level 1 neighborsWithHistory") {
+    new Level1 {
+      assert(neighborsWithHistory(Block(Pos(1,1),Pos(1,1)), List(Left,Up)).toSet == Set(
+        (Block(Pos(1,2),Pos(1,3)), List(Right,Left,Up)),
+        (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
+      )
+      )
+    }
+  }
   test("optimal solution for level 1") {
     new Level1 {
       assert(solve(solution) == Block(goal, goal))

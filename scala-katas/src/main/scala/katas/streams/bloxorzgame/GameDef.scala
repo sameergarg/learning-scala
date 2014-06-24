@@ -10,12 +10,12 @@ trait GameDef {
 
   /**
    * The case class `Pos` encodes positions in the terrain.
-   * 
+   *
    * IMPORTANT NOTE
    *  - The `x` coordinate denotes the position on the vertical axis
    *  - The `y` coordinate is used for the horizontal axis
    *  - The coordinates increase when moving down and right
-   * 
+   *
    * Illustration:
    *
    *     0 1 2 3   <- y axis
@@ -23,10 +23,10 @@ trait GameDef {
    *   1 o o o o
    *   2 o # o o    # is at position Pos(2, 1)
    *   3 o o o o
-   *  
+   *
    *   ^
    *   |
-   *  
+   *
    *   x axis
    */
   case class Pos(x: Int, y: Int) {
@@ -61,7 +61,7 @@ trait GameDef {
    */
   type Terrain = Pos => Boolean
 
-  
+
   /**
    * The terrain of this game. This value is left abstract.
    */
@@ -133,8 +133,11 @@ trait GameDef {
      * the current block, together with the corresponding move.
      */
     def neighbors: List[(Block, Move)] = {
+
       List((left,Left),(right, Right),(up, Up), (down, Down))
     }
+
+    val moves = List(Left, Right, Up, Down)
 
     /**
      * Returns the list of positions reachable from the current block
