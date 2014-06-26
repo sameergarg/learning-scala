@@ -30,8 +30,8 @@ trait Solver extends GameDef {
    */
   def neighborsWithHistory(b: Block, history: List[Move]): Stream[(Block, List[Move])] =
     for {
-      legalNeighbour <- b.legalNeighbors.toStream
-    } yield (legalNeighbour._1, legalNeighbour._2 :: history)
+      (legalNeighbor, move) <- b.legalNeighbors.toStream
+    } yield (legalNeighbor, move :: history)
 
 
   /**
@@ -41,12 +41,12 @@ trait Solver extends GameDef {
    */
   def newNeighborsOnly(neighbors: Stream[(Block, List[Move])],
                        explored: Set[Block]): Stream[(Block, List[Move])] = {
-    if(neighbors.isEmpty) Stream.empty
+    if (neighbors.isEmpty) Stream.empty
     else
       for {
-        neighbor <- neighbors
-        if(!explored.contains(neighbor._1))
-      } yield neighbor
+        (block, moves) <- neighbors
+        if (!explored.contains(block))
+      } yield (block, moves)
   }
 
   /**
@@ -74,26 +74,30 @@ trait Solver extends GameDef {
    */
   def from(initial: Stream[(Block, List[Move])],
            explored: Set[Block]): Stream[(Block, List[Move])] =
-  if(initial.isEmpty) Stream.empty
-  else {
-    val head = initial.head
-    newNeighborsOnly(neighborsWithHistory(head._1, head._2), explored)
-  }
+    if (initial.isEmpty) Stream.empty
+    else {
+      val next = for {
+        (block, moves) <- initial
+        newNeighborWithMoves <- newNeighborsOnly(neighborsWithHistory(block, moves), explored)
+      } yield newNeighborWithMoves
+      next #::: from(next, explored ++ (next map (_._1)))
+    }
 
   /**
    * The stream of all paths that begin at the starting block.
    */
-  lazy val pathsFromStart: Stream[(Block, List[Move])] = from(Stream((startBlock,Nil)), Set())
+  lazy val pathsFromStart: Stream[(Block, List[Move])] = from(Stream((startBlock, Nil)), Set())
 
   /**
    * Returns a stream of all possible pairs of the goal block along
    * with the history how it was reached.
    */
   lazy val pathsToGoal: Stream[(Block, List[Move])] =
-    for{
-      pathFromStart <- pathsFromStart
-      if(done(pathFromStart._1))
-    } yield
+    for {
+      (block,moves) <- pathsFromStart
+      if done(block)
+    } yield (block,moves)
+
 
   /**
    * The (or one of the) shortest sequence(s) of moves to reach the
@@ -103,5 +107,7 @@ trait Solver extends GameDef {
    * the first move that the player should perform from the starting
    * position.
    */
-  lazy val solution: List[Move] = ???
+  lazy val solution: List[Move] =
+    if (pathsToGoal.isEmpty) List()
+    else pathsToGoal.take(1).toList.map(_._2).flatten
 }
