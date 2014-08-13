@@ -6,8 +6,8 @@
 
 GET        /greetings                    @controllers.GreeterController.greet
 
-# GET        /health-check/ping                    controllers.HealthCheck.ping
-# GET        /health-check/version                    controllers.HealthCheck.version
+GET        /health-check/ping            controllers.HealthCheck.ping
+GET        /health-check/version         controllers.HealthCheck.version
 
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file        controllers.Assets.at(path="/public", file)
