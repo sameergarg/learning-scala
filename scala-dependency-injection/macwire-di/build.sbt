@@ -13,6 +13,6 @@ libraryDependencies ++= Seq(
   ws
 )
 
-libraryDependencies += "com.softwaremill.macwire" %% "macros" % "0.6"
+libraryDependencies += "com.softwaremill.macwire" %% "macros" % "0.7"
 
-libraryDependencies += "com.softwaremill.macwire" %% "runtime" % "0.6"
+libraryDependencies += "com.softwaremill.macwire" %% "runtime" % "0.7"

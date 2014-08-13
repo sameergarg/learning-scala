@@ -5,5 +5,5 @@ This file will be packaged with your application, when using `activator dist`.
 
 Works for
 * scala 2.111
-* macwire 0.6
+* macwire 0.7
 * play 2.3.2
