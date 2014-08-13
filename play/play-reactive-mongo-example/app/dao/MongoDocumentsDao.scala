@@ -40,19 +40,6 @@ trait MongoDocumentsDao[S, D <: Document] extends CrudDao[S, D] {
     }
   }
 
-  override def create(resource: D): Future[D] = {
-    val id = BSONObjectID.generate.stringify
-    val json = Json.toJson(resource).as[JsObject]
-    val document = Json.obj("_id" -> id).as[JsObject].deepMerge(json)
-    logger.info(s"Inserting document of type ${resource.getClass} with id:${resource._id}")
-    collection.insert(document).map[D] {
-      case LastError(true, _, _, _, Some(doc), _, _) => {
-        Json.fromJson[D](document).get
-      }
-      case _ => {
-        throw new Exception("Unable to create book")
-      }
-    }
-  }
+
 }
 

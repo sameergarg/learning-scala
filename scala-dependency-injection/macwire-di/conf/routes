@@ -4,7 +4,7 @@
 
 # Home page
 
-GET        /greetings                    controllers.Application.getGreetings
+GET        /greetings                    @controllers.GreeterController.greet
 
 # GET        /health-check/ping                    controllers.HealthCheck.ping
 # GET        /health-check/version                    controllers.HealthCheck.version
