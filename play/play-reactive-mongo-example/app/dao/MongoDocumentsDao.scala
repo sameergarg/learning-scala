@@ -40,6 +40,13 @@ trait MongoDocumentsDao[S, D <: Document] extends CrudDao[S, D] {
     }
   }
 
+  override def create(resource: D): Future[D] = {
+    collection.insert(resource).map{
+      case LastError(true, _, _, _, Some(doc), _, _) => resource
+      case _ => resource
+    }
+  }
+
 
 }
 
