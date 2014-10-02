@@ -113,9 +113,9 @@ object FunctionalDataStructures {
      * 3.10
      * general list-recursion function, foldLeft, that is tail-recursive
      */
-    def foldLeft[A,B](as: FuncList[A], z: B)(f: (B, A) => B): B = as match {
-      case Nil => z
-      case Cons(x, xs) => foldLeft(xs, f(z,x))(f)
+    def foldLeft[A,B](as: FuncList[A], b: B)(f: (B, A) => B): B = as match {
+      case Nil => b
+      case Cons(x, xs) => foldLeft(xs, f(b,x))(f)
     }
   }
 
