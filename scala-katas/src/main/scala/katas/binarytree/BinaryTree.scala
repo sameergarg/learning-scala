@@ -9,30 +9,30 @@ object BinaryTree {
 
   sealed trait Tree[+T] {
 
-    def map[R](f: T => R):Tree[R]
+   /* def map[R](f: T => R):Tree[R]
 
-    def mapFuture[R](f: T => R)(implicit ec: ExecutionContext, timeOut: Duration): Tree[Future[R]]
+    def mapFuture[R](f: T => R)(implicit ec: ExecutionContext, timeOut: Duration): Tree[Future[R]]*/
 
-    def mapPromise[R](f: T=>R)(tree: Tree[Future[R]])(implicit ec: ExecutionContext, timeOut: Duration): Future[Tree[R]]
+    //def mapPromise[R](f: T=>R)(tree: Tree[Future[R]])(implicit ec: ExecutionContext, timeOut: Duration): Future[Tree[R]]
 
-    def size : Int
+    //def size : Int
 
   }
 
   case object Empty extends Tree[Nothing] {
 
-    override def map[R](f: (Nothing) => R): Tree = Empty
+    /*override def map[R](f: (Nothing) => R): Tree = Empty
 
-    override def mapFuture[R](f: (Nothing) => R)(implicit ec: ExecutionContext, timeOut: Duration): Tree[Future[R]] = Empty
+    override def mapFuture[R](f: (Nothing) => R)(implicit ec: ExecutionContext, timeOut: Duration): Tree[Future[R]] = Empty*/
 
-    override def mapPromise[R](f: (Nothing) => R)(tree: Tree[Future[R]])(implicit ec: ExecutionContext, timeOut: Duration): Future[Tree[R]] = Future(Empty)
+    //override def mapPromise[R](f: (Nothing) => R)(tree: Tree[Future[R]])(implicit ec: ExecutionContext, timeOut: Duration): Future[Tree[R]] = Future(Empty)
 
-    override def size = 0
+    //override def size = 0
   }
 
   case class Node[+T](value: T, left: Tree[T], right: Tree[T]) extends Tree[T] {
 
-    override def map[R](f: T => R) = {
+    /*override def map[R](f: T => R) = {
       Node(
         f(value),
         left.map(f),
@@ -46,10 +46,10 @@ object BinaryTree {
         left.mapFuture(f),
         right.mapFuture(f)
       )
-    }
+    }*/
 
 
-    override def mapPromise[R](f: (T) => R)(tree: Tree[Future[R]])(implicit ec: ExecutionContext, timeOut: Duration): Future[Tree[R]] = {
+    /*override def mapPromise[R](f: (T) => R)(tree: Tree[Future[R]])(implicit ec: ExecutionContext, timeOut: Duration): Future[Tree[R]] = {
       val promise = Promise[Tree[R]]
       val treeSize = new AtomicInteger(size)
       for {
@@ -59,12 +59,12 @@ object BinaryTree {
         promise.success(tree.map (Await.result(_, 0 seconds)))
       }
       promise.future
-    }
+    }*/
 
-    override def size: Int = this match {
+    /*override def size: Int = this match {
       case Empty => 0
       case Node => 1 + left.size + right.size
-    }
+    }*/
   }
 
   def build[T](height: Int)(node : => T): Tree[T] = height match {

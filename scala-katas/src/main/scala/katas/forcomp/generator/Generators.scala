@@ -23,7 +23,7 @@ object Generators {
 
   val booleans =  for (x <- integers) yield x > 0
 
-  def pairs[X,Y](x: Generator[X], y: Generator[Y]):(X,Y)  = for(a <- x.generate; b <- y.generate) yield (a,b)
+  //def pairs[X,Y](x: Generator[X], y: Generator[Y]):(X,Y)  = for(a <- x.generate; b <- y.generate) yield (a,b)
 
   def single[T](x:T) = {
     x
