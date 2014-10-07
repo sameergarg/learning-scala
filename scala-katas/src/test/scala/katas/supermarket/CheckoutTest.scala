@@ -31,6 +31,11 @@ class CheckoutTest extends FunSuite with Matchers {
 
   test("should scan apples and bananas and apply buy two get cheapest free offer") {
     checkout totalFor List("Apple","Banana") should be (100)
+    checkout totalFor List("Apple","Banana","Banana") should be (160)
+    checkout totalFor List("Apple","Apple","Banana","Banana") should be (160)
   }
 
+  test("should scan melons without offer") {
+    checkout totalFor List("Melon","Melon") should be(400)
+  }
 }

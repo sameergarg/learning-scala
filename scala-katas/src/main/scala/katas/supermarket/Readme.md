@@ -19,8 +19,21 @@ buy one, get one free on Apples
 
 ## Step 3: Mix offer
 
-Shop now sell Bananas for 60p each
+Shop now sell Bananas for 100p each
 
 Buy one get one offer can be applied to the mix of apple and bananas
 
 When applying offer, cheapest of two should be free
+
+## Step 4: Add more fruits
+ 
+Shop now sell Melons
+
+There is no offer on Melon
+  
+## Step 5: Customer friendly buy one get one free offer
+   
+Offer should be applied to the pair of same priced item to get maximum discount for customers
+
+2 apples and 2 bananas should cost 160p
+

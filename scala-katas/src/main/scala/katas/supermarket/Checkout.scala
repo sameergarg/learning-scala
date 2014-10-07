@@ -2,21 +2,23 @@ package katas.supermarket
 
 trait Offer {
 
-  val itemPrice = Map("Apple" -> 60, "Orange" -> 25, "Banana" -> 100)
+  val itemPrice = Map("Apple" -> 60, "Orange" -> 25, "Banana" -> 100, "Melon" -> 200)
 
   def offerPrice(shoppingBasket: List[String]): Int
 }
 
-class BuyNGetMFreeOffer(n: Int, m: Int) extends Offer {
+class BuyNGetOneFreeOffer(n: Int) extends Offer {
 
   override def offerPrice(shoppingBasket: List[String]): Int = {
-    val size = shoppingBasket.size
-    val prices = shoppingBasket.flatMap(itemPrice.get(_)).sortWith((x, y) => x > y)
-    val totalPrice = prices.foldRight(0)(_ + _)
-    val offerItemsPrice = prices.takeRight(size / n).foldRight(0)(_ + _)
-
-    totalPrice - offerItemsPrice
+    val totalPrice = shoppingBasket.flatMap(itemPrice.get(_)).sorted.reverse
+    val offerItemsPrice = totalPrice.zipWithIndex.filter(pair => (pair._2+1) % n == 0).map(_._1).toList.sum
+    totalPrice.sum - offerItemsPrice
   }
+}
+
+class NoOffer() extends Offer {
+
+  override def offerPrice(shoppingBasket: List[String]): Int = shoppingBasket.flatMap(itemPrice.get(_)).sum
 }
 
 class Checkout {
@@ -24,15 +26,19 @@ class Checkout {
   type ShoppingCart = List[String]
 
   def totalFor(shoppingCart: ShoppingCart) = {
-    threeForTwoOffer(shoppingCart) + oneForOneOffer(shoppingCart)
+    threeForTwoOffer(shoppingCart) + oneForOneOffer(shoppingCart) + notOnOffer(shoppingCart)
+  }
+
+  def notOnOffer(shoppingCart: ShoppingCart): Int = {
+    new NoOffer().offerPrice(shoppingCart.filter(_ == "Melon"))
   }
 
   def oneForOneOffer(shoppingCart: ShoppingCart): Int = {
-    new BuyNGetMFreeOffer(2,1).offerPrice(shoppingCart.filter(name => name == "Apple" || name == "Banana"))
+    new BuyNGetOneFreeOffer(2).offerPrice(shoppingCart.filter(name => name == "Apple" || name == "Banana"))
   }
 
   private def threeForTwoOffer(shoppingCart: ShoppingCart): Int = {
-    new BuyNGetMFreeOffer(3,2).offerPrice(shoppingCart.filter(_ == "Orange"))
+    new BuyNGetOneFreeOffer(3).offerPrice(shoppingCart.filter(_ == "Orange"))
   }
 
 
