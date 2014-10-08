@@ -32,16 +32,6 @@ object FunctionalDataStructures {
       loop(list, 0)
     }
 
-    /**
-     * 3.9 Compute the length of a list using foldRight
-     * @param as
-     * @tparam A
-     * @return
-     */
-    def len[A](as: FuncList[A]): Int = {
-      foldRight(as,0)((x,y) => y+1)
-    }
-
 
     /**
      * 3.2
@@ -101,22 +91,81 @@ object FunctionalDataStructures {
     def foldRight[A, B](as: FuncList[A], b: B)(f: (A, B) => B): B = {
 
       @tailrec
-      def loop(list: FuncList[A], acc: B) : B = list match {
+      def loop(list: FuncList[A], acc: B): B = list match {
         case Nil => acc
-        case Cons(x, xs) => loop(xs, f(x,acc))
+        case Cons(x, xs) => loop(xs, f(x, acc))
       }
 
       loop(as, b)
     }
 
+
     /**
      * 3.10
      * general list-recursion function, foldLeft, that is tail-recursive
      */
-    def foldLeft[A,B](as: FuncList[A], b: B)(f: (B, A) => B): B = as match {
+    @tailrec
+    def foldLeft[A, B](as: FuncList[A], b: B)(f: (B, A) => B): B = as match {
       case Nil => b
-      case Cons(x, xs) => foldLeft(xs, f(b,x))(f)
+      case Cons(x, xs) => foldLeft(xs, f(b, x))(f)
     }
+
+
+    /**
+     * 3.9 Compute the length of a list using foldRight
+     * @param as
+     * @tparam A
+     * @return
+     */
+    def len[A](as: FuncList[A]): Int = foldRight(as, 0)((x, y) => y + 1)
+
+    def append[A](a1: FuncList[A], a2: FuncList[A]): FuncList[A] = {
+      foldLeft(a1, a2)((tail, y) => Cons(y, tail))
+    }
+
+    /**
+     * 3.18
+     */
+    def map[A,B](as: FuncList[A])(f: A => B): FuncList[B] = as match {
+      case Nil => Nil
+      case Cons(x, xs) => Cons( f(x), map(xs)(f))
+    }
+
+    /**
+     * 3.19
+     *
+     */
+    def filter[A](as: FuncList[A])(f: A => Boolean): FuncList[A] =  {
+      flatMap(as)(x=>if(f(x)) FuncList(x) else Nil)
+    }
+
+    /**
+     * 3.20
+     */
+    def flatMap[A,B](as: FuncList[A])(f: A => FuncList[B]): FuncList[B] = as match {
+      case Nil => Nil
+      case Cons(x, xs) => append(f(x), flatMap(xs)(f))
+    }
+
+    /*def addLists[Int](as: FuncList[Int], bs: FuncList[Int]): FuncList[Int] = as match {
+      case Nil => Nil
+      case Cons(x , xs) => bs match {
+        case Nil => Nil
+        case Cons(y, ys) => Cons(x+y , addLists(xs,ys))
+      }
+    }*/
+
+    /**
+     * 3.22
+     */
+    def addLists[A : Numeric](as: FuncList[A], bs: FuncList[A]): FuncList[A] = as match {
+      case Nil => Nil
+      case Cons(x , xs) => bs match {
+        case Nil => Nil
+        case Cons(y, ys) => Cons(implicitly[Numeric[A]].plus(x, y), addLists(xs,ys))
+      }
+    }
+
   }
 
   import FuncList._
@@ -124,27 +173,48 @@ object FunctionalDataStructures {
   /**
    * 3.1
    */
-  val x = FuncList(1, 2, 3, 4) match {
+  val funcList = FuncList(1, 2, 3, 4)
+
+  val x = funcList match {
     case Cons(x, Cons(2, Cons(4, _))) => x
     case Nil => 42
     case Cons(x, Cons(y, Cons(3, Cons(4, _)))) => x + y
     case Cons(h, t) => h + sum(t)
     case _ => 101
-
   }
-  tail(FuncList(1, 2, 3, 4))
+  tail(funcList)
   tail(Nil)
-  setHead(5, FuncList(1, 2, 3, 4))
-  dropWhile(FuncList(1, 2, 3, 4), (x: Int) => x % 2 == 0)
-  init(FuncList(1, 2, 3, 4))
-
-  foldRight(FuncList(1, 2, 3, 4), 0)((x,y)=>x+y)
-
-  foldRight(FuncList(1, 2, 3, 4), "")((x,y)=>x+y)
+  setHead(5, funcList)
+  dropWhile(funcList, (x: Int) => x % 2 == 0)
+  init(funcList)
+  foldRight(funcList, 0)((x, y) => x + y)
+  foldRight(funcList, "")((x, y) => x + y)
   //3.8 would reverse list
-  foldRight(FuncList(1, 2, 3, 4), Nil: FuncList[Int])(Cons(_,_))
+  foldRight(funcList, Nil: FuncList[Int])(Cons(_, _))
   //3.9 Compute the length of a list using foldRight
   len(Nil)
-  len(FuncList(1, 2, 3, 4))
+  len(funcList)
+  //3.10
+  foldLeft(funcList, "")((x, y) => x + y)
+  //3.11 Write sum, product, and a function to compute the length of a list using foldLeft.
+  //sum using fold left
+  foldLeft(funcList, 0)(_ + _)
+  //product using fold left
+  foldLeft(funcList, 1)(_ * _)
+  foldLeft(funcList, 0)((x, y) => x + 1)
+  append(funcList, FuncList(5,6,7,8))
+
+  //3.16 transforms a list of integers by adding 1 to each element.
+  map(FuncList(1,2,3,4))(x=>x+1)
+
+  //3.17 turns each value in a List[Double] into a String
+  List(1.1,2.2).map(_.toString)
+
+  filter(funcList)(_%2==0)
+  flatMap(funcList)(x=>FuncList(x.toString))
+
+  //that accepts two lists and constructs a new list by adding corresponding elements.
+
+  addLists(funcList, FuncList(5,6,7,8))
 
 }
