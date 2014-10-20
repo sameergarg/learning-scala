@@ -5,6 +5,8 @@ import functionalproginscala.ch05laziness.Stream.{cons, empty}
 
 trait Stream[+A] {
 
+  import functionalproginscala.ch05laziness.Stream._
+
   def headOption: Option[A] = this match {
     case Empty => None
     case Cons(h, t) => Some(h())
@@ -90,8 +92,33 @@ trait Stream[+A] {
   }
 
   def flatMap[B](f: A => Stream[B]): Stream[B] = {
-    foldRight(empty[B])((a, b) => f(a) append b )
+    foldRight(empty[B])((a, b) => f(a) append b)
   }
+
+  /**
+   * 5.13
+   * Use unfold to implement map, take, takeWhile, zipWith (as in chapter 3), and zipAll.
+   */
+  def map_unfold[B](f: A => B): Stream[B] = {
+    unfold(this) {
+      case Cons(h, t) => Some(f(h()), t())
+      case Empty => None
+    }
+  }
+
+  def take_unfold(n: Int): Stream[A] =
+    unfold(this,n) {
+      case(Cons(h,t),n) if(n>1) => Some(h(),(t(),n-1))
+      case(Cons(h,t),n) if(n==1) => Some(h(),(empty, n-1))
+      case _ => None
+    }
+
+  def takWhile_unfold(p: A => Boolean): Stream[A] =
+    unfold(this) {
+      case Cons(h, t) if p(h()) => Some(h(), t())
+      case _ => None
+    }
+
 }
 
 object Empty extends Stream[Nothing]
@@ -112,6 +139,59 @@ object Stream {
 
     Cons(() => h, () => t)
   }
+
+  /**
+   * 5.8
+   * Generalize ones slightly to the function constant, which returns an infinite Stream of a given value.
+   */
+  def constant[A](c: A): Stream[A] =
+    cons(c, constant(c))
+
+  /**
+   * 5.9
+   * generates an infinite stream of integers, starting from n, then n + 1, n + 2, and so on.
+   */
+  def from(n: Int): Stream[Int] =
+    cons(n, from(n + 1))
+
+  /**
+   * 5.10
+   * generates the infinite stream of Fibonacci numbers: 0, 1, 1, 2, 3, 5, 8,
+   */
+  val fibs = {
+    def loop(secondLast: Int, last: Int): Stream[Int] = {
+      cons(secondLast, loop(last, secondLast + last))
+    }
+    loop(0, 1)
+  }
+
+  /**
+   * 5.11
+   * general stream-building function called unfold. It takes an initial state,
+   * and a function for producing both the next state and the next value in the generated
+   */
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = f(z) match {
+    case None => empty[A]
+    case Some((a, s)) => cons(a, unfold(s)(f))
+
+  }
+
+  /**
+   * 5.12
+   * Write fibs, from, constant, and ones in terms of unfold
+   */
+  val fibs_unfold = {
+    unfold((0, 1)) { case (a, b) => Some(a, (b, (a + b)))}
+  }
+
+  def constant_unfold[A](c: A): Stream[A] = {
+    unfold(c)(const => Some((const, const)))
+  }
+
+  def from_unfold(n: Int): Stream[Int] = {
+    unfold(n)(number => Some((number, number + 1)))
+  }
+
 
   def apply[A](as: A*): Stream[A] =
     if (as.isEmpty) empty[A] else cons(as.head, apply(as.tail: _*))
