@@ -1,7 +1,6 @@
 package katas.forcomp
 
 import katas.common._
-import com.apple.jobjc.NativeObjectLifecycleManager.Nothing
 import scala.None
 
 object Anagrams {

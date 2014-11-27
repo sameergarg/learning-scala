@@ -4,9 +4,9 @@ import sun.util.EmptyListResourceBundle
 import scala.math._
 import java.util.NoSuchElementException
 import scala.NoSuchElementException
-import com.apple.jobjc.NativeObjectLifecycleManager.Nothing
 import scala.collection.immutable.Stream.Empty
 import scala.annotation.tailrec
+
 
 /**
  * A class to represent tweets.
