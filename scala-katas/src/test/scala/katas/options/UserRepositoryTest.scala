@@ -19,6 +19,10 @@ class UserRepositoryTest extends WordSpec with Matchers {
         UserRepository.findUser(100) shouldBe None
       }
     }
+
+    "various checks on options" in {
+
+    }
   }
 
 }
