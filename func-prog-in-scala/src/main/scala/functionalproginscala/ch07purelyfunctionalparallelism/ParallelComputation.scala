@@ -30,8 +30,28 @@ class Par[A] {
 
   def get[A](a: Par[A]): A = ???
 
-  def map2(par1: Par[A], par2: Par[A])(f: (A, A) => A) = ???
+  def map2[A,B,C](par1: Par[A], par2: Par[B])(f: (A, B) => C) = ???
 
+  /**
+   * marks a computation for concurrent evaluation. The evaluation won’t
+   * actually occur until forced by run.
+   * @param a
+   * @tparam A
+   * @return
+   */
+  def fork[A](a: => Par[A]): Par[A] = ???
+
+  def lazyUnit[A](a: => A): Par[A] = fork(unit(a))
+
+  /**
+   * Fully evaluates a given Par, spawning
+   * parallel computations as requested by
+   * fork and extracting the resulting value
+   * @param a
+   * @tparam A
+   * @return
+   */
+  def run[A](a: Par[A]): A = ???
 }
 
 object Par extends Par[Int] {
