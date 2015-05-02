@@ -7,13 +7,13 @@ object TweetLength {
     Signal(MaxTweetLength - tweetLength(tweetText()))
   }
 
-  def colorForRemainingCharsCount(remainingCharsCount: Signal[Int]): Signal[String] = {
-    remainingCharsCount() match {
-      case i if (i >= 0 && i <= 14) => Signal("orange")
-      case i if (i >= 15) => Signal("green")
-      case _ => Signal("red")
-    }
-  }
+  def colorForRemainingCharsCount(remainingCharsCount: Signal[Int]): Signal[String] =
+    Signal(remainingCharsCount() match {
+      case i if (i >= 0 && i <= 14) => "orange"
+      case i if (i >= 15) => "green"
+      case _ => "red"
+    })
+
 
   /** Computes the length of a tweet, given its text string.
     * This is not equivalent to text.length, as tweet lengths count the number
