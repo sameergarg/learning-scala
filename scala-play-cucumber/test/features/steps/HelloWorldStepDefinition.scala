@@ -8,10 +8,11 @@ import play.api.test._
 
 class HelloWorldStepDefinition extends ScalaDsl with EN with Matchers {
 
-  val webDriverClass = Helpers.HTMLUNIT
+  //val webDriverClass = Helpers.HTMLUNIT
+  val webDriverClass = Helpers.FIREFOX
 
   val app = FakeApplication()
-  val port = 3333 // or whatever you want
+  val port = 9000 // or whatever you want
 
   lazy val browser: TestBrowser = TestBrowser.of(webDriverClass, Some("http://localhost:" + port))
   lazy val server = TestServer(port, app)
@@ -19,12 +20,12 @@ class HelloWorldStepDefinition extends ScalaDsl with EN with Matchers {
 
   Before() { s =>
     // initialize play-cucumber
-    server.start()
+    //server.start()
   }
 
   After() { s =>
     // shut down play-cucumber
-    server.stop()
+    //server.stop()
     browser.quit()
   }
 
