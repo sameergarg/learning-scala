@@ -4,7 +4,7 @@ Feature: Search google
   I would like to utilize cucumber,
   So that I can create BDD style selenium-webdriver tests.
 
-  @wip
+  # @wip
   Scenario: Google search, using selenium
     Given I have navigated to google
     When I search for "selenium"

@@ -15,6 +15,11 @@ class SearchGoogleStepDefs extends ScalaDsl with EN with Matchers {
   val driver = new FirefoxDriver()
   driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS)
 
+  After() { s =>
+    // shut down play-cucumber
+    //driver.quit()
+  }
+
   Given("""^I have navigated to google$"""){ () =>
     driver.navigate().to("http://www.google.co.uk")
   }
