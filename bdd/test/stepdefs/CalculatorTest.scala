@@ -14,16 +14,16 @@ class CalculatorTest extends ScalaDsl with EN with Matchers with Calculator {
   var op2: Number = _
   var operator: Char = _
 
-  Given("""^the digit (\d+)$"""){ (arg0:Int) =>
-    op1 = arg0
+  Given("""^the digit (\d+)$"""){ (operand:Int) =>
+    op1 = operand
   }
 
-  When("""^it is multiplied by (\d+)$"""){ (arg0:Int) =>
-    op2 = arg0
+  When("""^it is multiplied by (\d+)$"""){ (operand:Int) =>
+    op2 = operand
     operator = '*'
   }
 
-  Then("""^the result is (\d+)$"""){ (arg0:Int) =>
-    calculate(op1, op2, operator) shouldBe arg0
+  Then("""^the result is (\d+)$"""){ (result:Int) =>
+    calculate(op1, op2, operator) shouldBe result
   }
 }
