@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
   features = Array("test/resources/features"),
   glue = Array("stepdefs"),
   format = Array("pretty", "html:target/cucumber-report"),
-  tags = Array("@wip","@completed")
+  tags = Array("@wip")
 )
 class RunCucumber {
 }

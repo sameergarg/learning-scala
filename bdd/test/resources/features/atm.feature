@@ -4,7 +4,7 @@ As an Account Holder
 I want to withdraw cash from an ATM
 So that I can get money when the bank is closed
 
-  @completed
+  #@wip
   Scenario: Account has sufficient funds
 
   Given the account balance is £100

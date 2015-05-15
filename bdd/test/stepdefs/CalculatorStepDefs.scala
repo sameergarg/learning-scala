@@ -8,7 +8,7 @@ import services.Calculator
 /**
  * Created by sameer on 13/05/15.
  */
-class CalculatorTest extends ScalaDsl with EN with Matchers with Calculator {
+class CalculatorStepDefs extends ScalaDsl with EN with Matchers with Calculator {
 
   var op1: Number = _
   var op2: Number = _
