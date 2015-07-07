@@ -1,5 +1,4 @@
-package katas.loanpattern
-
+package katas.designpatterns
 
 object LoanPattern extends App {
 

@@ -72,29 +72,43 @@ Wally 28
 
 class PeopleRegister(people: Seq[Person]) {
   
-  def count(): Int = ???  
+  def count(): Int = people.size
   
-  def oldestPerson(): Person = ???
+  def oldestPerson(): Person = people.maxBy(_.age)
+
+  // Karl -> 3, Tom -> 2
+  def commonestName(): String = people.groupBy(_.name).mapValues(peoples => peoples.size).maxBy(_._2)._1
   
-  def commonestName(): String = ???
+  def youngestCalled(sought: String): Option[Int] = people.filter(_.name == sought)  match {
+    case Nil => None
+    case seq: Seq[Person] => Some(seq.minBy(_.age).age)
+  }
   
-  def youngestCalled(sought: String): Option[Int] = ???
+  def countOfChildren(): Int = isChild.size
+
+  private def isChild: Seq[Person] = {
+    people.filter(_.age <= 18)
+  }
+
+  def adultToChildRatio(): Float = people.filter(_.age>18).size/countOfChildren()
   
-  def countOfChildren(): Int = ???
-  
-  def adultToChildRatio(): Float = ???
-  
-  def averageAge(): Int = ???
-  
-  def medianAge(): Double = ??? 
-  
+  def averageAge(): Int = people.map(_.age).sum/count()
+
+  //6 = 3
+  //7 = 3.5
+  def medianAge(): Double = {
+    val sortedPeople = people.sortBy(_.age)
+    val (firstHalf, secondHalf) = sortedPeople.splitAt(sortedPeople.size/ 2)
+    (firstHalf.last.age.toDouble + secondHalf.head.age) / 2
+  }
+
 }
 
 case class Person(name: String, age: Int)
 
 object Person {
-  def parse(data: String): Person = data.trim.split(" ").toSeq match {
-    case Seq(name, age) => Person(name, age.toInt)
+  def parse(data: String): Person = data.split(" ") match {
+    case Array(name, age) => Person(name, age.toInt)
   }
 }
 
