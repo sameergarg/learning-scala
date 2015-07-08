@@ -7,6 +7,7 @@ object LoanPattern extends App {
   def resourceLender[T](f: Resource => T) = {
     val resource = Resource(1)
     f(resource)
+    //dispose resource
   }
 
   val lendee = {resource: Resource =>
