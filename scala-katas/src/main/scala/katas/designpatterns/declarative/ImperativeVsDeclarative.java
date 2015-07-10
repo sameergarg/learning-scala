@@ -1,4 +1,4 @@
-package katas.designpatterns;
+package katas.designpatterns.declarative;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

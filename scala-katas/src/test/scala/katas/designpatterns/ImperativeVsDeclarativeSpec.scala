@@ -3,6 +3,7 @@ package katas.designpatterns
 import java.math
 import java.math.BigDecimal.valueOf
 
+import katas.designpatterns.declarative.ImperativeVsDeclarative
 import org.scalatest.{Matchers, FlatSpec}
 
 /**
