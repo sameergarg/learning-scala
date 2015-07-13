@@ -2,7 +2,8 @@ package katas.designpatterns.stratergy
 
 import java.util.function.Predicate
 
-import katas.designpatterns.stratergy.AssetsStrategyImperative.assets
+import katas.designpatterns.stratergy.oo.AssetsStrategyImperative
+import AssetsStrategyImperative.assets
 import org.scalatest.{Matchers, FlatSpec}
 import java.util.function.{ Function ⇒ JFunction, Predicate ⇒ JPredicate, BiPredicate }
 

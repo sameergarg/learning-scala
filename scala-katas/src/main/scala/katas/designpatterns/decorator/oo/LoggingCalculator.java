@@ -1,6 +1,4 @@
-package katas.designpatterns.decorator.classic;
-
-import java.math.BigDecimal;
+package katas.designpatterns.decorator.oo;
 
 /**
  *

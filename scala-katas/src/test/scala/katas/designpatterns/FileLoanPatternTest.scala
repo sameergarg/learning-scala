@@ -1,5 +1,6 @@
 package katas.designpatterns
 
+import katas.designpatterns.loan.FileLoanPattern
 import org.scalatest.{Matchers, FlatSpec}
 
 /**

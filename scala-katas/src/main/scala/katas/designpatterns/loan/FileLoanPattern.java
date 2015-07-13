@@ -1,4 +1,4 @@
-package katas.designpatterns;
+package katas.designpatterns.loan;
 
 import java.io.File;
 import java.io.IOException;

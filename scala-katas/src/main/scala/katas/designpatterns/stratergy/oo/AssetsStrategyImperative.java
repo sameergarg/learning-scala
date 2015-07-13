@@ -1,4 +1,9 @@
-package katas.designpatterns.stratergy;
+package katas.designpatterns.stratergy.oo;
+
+import katas.designpatterns.stratergy.Asset;
+import katas.designpatterns.stratergy.AssetType;
+import katas.designpatterns.stratergy.BOND$;
+import katas.designpatterns.stratergy.STOCK$;
 
 import java.util.Arrays;
 import java.util.List;
