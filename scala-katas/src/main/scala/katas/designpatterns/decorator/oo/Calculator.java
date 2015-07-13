@@ -1,13 +1,23 @@
 package katas.designpatterns.decorator.oo;
 
+import java.math.BigDecimal;
+
 public interface Calculator {
 
-    Number add(int a, int b);
+    default Number add(int a, int b) {
+        return a + b;
+    }
 
-    Number subtract(int a, int b);
+    default Number subtract(int a, int b) {
+        return a - b;
+    }
 
-    Number multiply(int a, int b);
+    default Number multiply(int a, int b) {
+        return a * b;
+    }
 
-    Number divide(int a, int b);
+    default Number divide(int a, int b) {
+        return new BigDecimal(a).divide(new BigDecimal(b));
+    }
 
 }
