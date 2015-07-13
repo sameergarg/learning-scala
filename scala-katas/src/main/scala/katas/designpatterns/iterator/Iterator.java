@@ -1,4 +1,4 @@
-package katas.designpatterns.declarative;
+package katas.designpatterns.iterator;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * From collection of prices and find total discounted price values
  */
-public class ImperativeVsDeclarative {
+public class Iterator {
 
     final List<BigDecimal> prices = Arrays.asList(
             new BigDecimal("10"), new BigDecimal("30"), new BigDecimal("17"),
