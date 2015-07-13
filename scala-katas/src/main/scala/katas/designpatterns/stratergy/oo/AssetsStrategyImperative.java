@@ -21,29 +21,25 @@ public class AssetsStrategyImperative {
 
     //without strategy
     public int totalBondValues(final List<Asset> assets) {
-        return assets.stream()
-                .mapToInt(asset ->
-                        asset.assetType() == BOND$.MODULE$ ? asset.value() : 0)
-                .sum();
+        return assetValues(assets, BOND$.MODULE$);
     }
 
     public int totalStockValues(final List<Asset> assets) {
-        return assets.stream()
-                .mapToInt(asset ->
-                        asset.assetType() == STOCK$.MODULE$ ? asset.value() : 0)
-                .sum();
+        return assetValues(assets, STOCK$.MODULE$);
     }
 
     //naive
     public int assetValues(final List<Asset> assets, AssetType assetType) {
-        return assets.stream()
-                .mapToInt(asset ->
-                        asset.assetType() == assetType ? asset.value() : 0)
-                .sum();
+        int value = 0;
+        for(Asset asset: assets){
+            if(asset.assetType() == assetType){
+                value += asset.value();
+            }
+        }
+        return value;
     }
 
     //all
-
     public int totalAssetValuesOf(final List<Asset> assets) {
         return assets.stream()
                 .mapToInt(asset -> asset.value())
