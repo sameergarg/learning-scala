@@ -1,13 +1,10 @@
 package katas.designpatterns.command.functional;
 
-import katas.designpatterns.command.oo.Dinner;
-import katas.designpatterns.command.oo.Lunch;
+import katas.designpatterns.command.Dinner;
+import katas.designpatterns.command.Lunch;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.function.Consumer;
-
-import static org.junit.Assert.*;
 
 /**
  *

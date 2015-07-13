@@ -1,4 +1,4 @@
-package katas.designpatterns.command.oo;
+package katas.designpatterns.command;
 
 /**
  *

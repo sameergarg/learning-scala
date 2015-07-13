@@ -1,5 +1,8 @@
 package katas.designpatterns.command.oo;
 
+import katas.designpatterns.command.Dinner;
+import katas.designpatterns.command.Lunch;
+
 /**
  *
  */
