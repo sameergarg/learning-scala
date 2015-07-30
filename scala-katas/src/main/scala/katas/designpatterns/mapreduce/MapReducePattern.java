@@ -24,8 +24,8 @@ public class MapReducePattern {
      */
     public String selectHighestOfAllStockPriceLessThan(int minimumStockPrice){
         return symbols
-                .stream()
-                //.parallelStream()
+                //.stream()
+                .parallelStream()
                 .map(symbol -> new StockInfo(symbol, YahooFinance$.MODULE$.priceFor(symbol).bigDecimal()))
                 .filter(priceLessThan(minimumStockPrice))
                 .reduce(comparePrices())
