@@ -10,5 +10,6 @@ libraryDependencies ++= Seq(
   jdbc,
   anorm,
   cache,
-  ws
+  ws,
+  "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.9"
 )
