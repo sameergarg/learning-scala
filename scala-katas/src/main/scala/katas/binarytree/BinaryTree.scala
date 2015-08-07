@@ -18,7 +18,7 @@ case class Node(left: BinaryTree[Int], right: BinaryTree[Int], element: Int) ext
 
   override def incl(elem: Int): BinaryTree[Int] = elem match {
     case x if x < element => Node(left.incl(elem), right, element)
-    case x if x < element => Node(left, right.incl(elem), element)
+    case x if x > element => Node(left, right.incl(elem), element)
     case _ => this
   }
 
@@ -31,11 +31,11 @@ case class Node(left: BinaryTree[Int], right: BinaryTree[Int], element: Int) ext
 
   override def contains(elem: Int): Boolean = {
     if(elem < element)
-    left contains elem
+      left contains elem
     else if(elem > element)
-    right contains elem
+      right contains elem
     else
-    true
+      true
   }
 
 }
