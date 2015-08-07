@@ -10,6 +10,8 @@ libraryDependencies ++= Seq(
   jdbc,
   cache,
   ws,
+  "pl.matisoft" %% "swagger-play24" % "1.4",
+  "com.wordnik" %% "swagger-play2" % "1.3.12_play24",
   specs2 % Test
 )
 
