@@ -80,5 +80,13 @@ class MarsRoverSpec extends FlatSpec with Matchers {
     }
   }
 
+  it should "be able to move in several directions from a given position" in {
+    val position = Position(location = Coordinates(4, 3), facing = W)
+    val newPosition = marsRover.move(position, MarsRover.Directions(F,L,B,L))
+
+    newPosition._2 shouldBe None
+    newPosition._1.location.x shouldBe 4
+    newPosition._1.location.y shouldBe 1
+  }
 
 }
