@@ -1,5 +1,7 @@
 package katas.marsrover
 
+import katas.marsrover.MarsRover._
+
 /**
  *
  * Develop an api that moves a rover around on a grid.
@@ -19,6 +21,38 @@ package katas.marsrover
  * Time: 21:36
  */
 
+class MarsRover(planet: Planet) {
+
+  def move(position: Position, directions: Directions): (Position, Option[Obstacle]) = (position.facing, directions) match {
+    case (_, Nil) => (position, None)
+    case (facing, direction) if(moveUp(facing, direction.head))=> (position.copy(location = position.location.copy(y = position.location.y+1)), None)
+    case (facing, direction) if(moveDown(facing, direction.head))=> (position.copy(location = position.location.copy(y = position.location.y-1)), None)
+    case (facing, direction) if(moveForward(facing, direction.head))=> (position.copy(location = position.location.copy(x = position.location.x+1)), None)
+    case (facing, direction) if(moveBackward(facing, direction.head))=> (position.copy(location = position.location.copy(x = position.location.x-1)), None)
+  }
+  
+  private[marsrover] def moveUp(facing: DirectionFacing, direction: Direction) = (facing, direction) match {
+    case (E, L)|(N, F)|(W,R)|(S, B) => true
+    case _ => false  
+  }
+
+  private[marsrover] def moveDown(facing: DirectionFacing, direction: Direction) = (facing, direction) match {
+    case (E, R)|(N, B)|(W, L)|(S, F) => true
+    case _ => false  
+  }
+
+  private[marsrover] def moveForward(facing: DirectionFacing, direction: Direction) = (facing, direction) match {
+    case (E, F)|(N, R)|(W, B)|(S, L) => true
+    case _ => false
+  }
+
+  private[marsrover] def moveBackward(facing: DirectionFacing, direction: Direction) = (facing, direction) match {
+    case (E, B)|(N, L)|(W, F)|(S, R) => true
+    case _ => false
+  }
+
+}
+
 object MarsRover {
 
   sealed trait DirectionFacing
@@ -33,10 +67,16 @@ object MarsRover {
   case object L extends Direction
   case object R extends Direction
 
+  case class Coordinates(x: Int, y: Int)
+  case class Position(location:Coordinates, facing: DirectionFacing)
+
   case class Grid(rows:Int, cols:Int)
-  case class Location(x: Int, y: Int, direction: DirectionFacing)
+  case class Planet(grid: Grid, obstacles: List[Obstacle])
 
   type Directions = List[Direction]
+  val Directions = List
 
-  def move(location: Location, directions: Directions): Location = ???
+  type Obstacle = Coordinates
+
+
 }
