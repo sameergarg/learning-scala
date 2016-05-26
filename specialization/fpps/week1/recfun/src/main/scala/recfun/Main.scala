@@ -30,7 +30,21 @@ object Main {
   /**
    * Exercise 2
    */
-    def balance(chars: List[Char]): Boolean = ???
+    def balance(chars: List[Char]): Boolean = {
+
+      def loop(acc: Int, rem: List[Char]): Boolean = {
+        if (acc < 0)
+          false
+        else rem match {
+          case Nil => acc == 0
+          case '('::tail => loop(acc + 1, tail)
+          case ')'::tail => loop(acc - 1, tail)
+          case head::tail => loop(acc, tail)
+        }
+      }
+
+      loop(0, chars)
+    }
   
   /**
    * Exercise 3
