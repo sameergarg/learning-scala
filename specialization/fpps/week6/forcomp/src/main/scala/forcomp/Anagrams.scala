@@ -104,11 +104,10 @@ object Anagrams {
     * and has no zero-entries.
     */
   def subtract(x: Occurrences, y: Occurrences): Occurrences = {
-    val xsMap = x.toMap
     val ysMap = y.toMap
-    xsMap.map{
+    x.map{
       case (c, times) => c -> (times - ysMap.getOrElse(c, 0))
-    }.toList.filter(_._2 > 0)
+    }.filter(_._2 > 0)
   }
 
   /** Returns a list of all anagram sentences of the given sentence.
