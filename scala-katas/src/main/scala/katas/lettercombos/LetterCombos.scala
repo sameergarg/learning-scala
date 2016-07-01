@@ -9,6 +9,6 @@ package katas.lettercombos
 object LetterCombos {
 
   def buildCombos(letters: Seq[Char]) = {
-    def build(prefix: String, rem: Seq[])
+    //def build(prefix: String, rem: Seq[])
   }
 }

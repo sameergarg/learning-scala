@@ -151,7 +151,6 @@ object Anagrams {
     * Note: There is only one anagram of an empty sentence.
     */
   def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
-    dictionaryByOccurrences.foreach(entry =>if(entry._2.contains("nil")) println(entry._1))
 
     def anagrams(occurrences: Occurrences): List[Sentence] = {
       if(occurrences.isEmpty) List(List())
