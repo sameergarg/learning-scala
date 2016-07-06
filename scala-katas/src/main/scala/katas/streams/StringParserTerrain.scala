@@ -1,26 +1,26 @@
-package katas.streams.bloxorzgame
+package katas.streams
 
 /**
  * This component implements a parser to define terrains from a
  * graphical ASCII representation.
- * 
+ *
  * When mixing in that component, a level can be defined by
  * defining the field `level` in the following form:
- * 
+ *
  *   val level =
  *     """------
  *       |--ST--
  *       |--oo--
  *       |--oo--
  *       |------""".stripMargin
- * 
+ *
  * - The `-` character denotes parts which are outside the terrain
  * - `o` denotes fields which are part of the terrain
  * - `S` denotes the start position of the block (which is also considered
      inside the terrain)
  * - `T` denotes the final position of the block (which is also considered
      inside the terrain)
- * 
+ *
  * In this example, the first and last lines could be omitted, and
  * also the columns that consist of `-` characters only.
  */
@@ -36,27 +36,26 @@ trait StringParserTerrain extends GameDef {
    * This method returns terrain function that represents the terrain
    * in `levelVector`. The vector contains parsed version of the `level`
    * string. For example, the following level
-   * 
+   *
    *   val level =
    *     """ST
    *       |oo
    *       |oo""".stripMargin
-   * 
+   *
    * is represented as
-   * 
+   *
    *   Vector(Vector('S', 'T'), Vector('o', 'o'), Vector('o', 'o'))
    *
    * The resulting function should return `true` if the position `pos` is
    * a valid position (not a '-' character) inside the terrain described
    * by `levelVector`.
    */
-  def terrainFunction(levelVector: Vector[Vector[Char]]): Pos => Boolean = { pos =>
-      pos.x >=0 &&
+  def terrainFunction(levelVector: Vector[Vector[Char]]): Pos => Boolean = pos =>
+      pos.x >= 0 &&
       pos.x < levelVector.size &&
       pos.y < levelVector(pos.x).size &&
-      pos.y >=0 &&
+      pos.y >= 0 &&
       levelVector(pos.x)(pos.y) != '-'
-  }
 
   /**
    * This function should return the position of character `c` in the
@@ -67,8 +66,8 @@ trait StringParserTerrain extends GameDef {
    * `Vector` class
    */
   def findChar(c: Char, levelVector: Vector[Vector[Char]]): Pos = {
-    val x = levelVector.indexWhere{_.indexOf(c) >= 0}
-    val y = levelVector(x).indexWhere(_==c)
+    val x = levelVector.indexWhere(_.contains(c))
+    val y = levelVector(x).indexWhere(_ == c)
     Pos(x,y)
   }
 

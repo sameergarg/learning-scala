@@ -79,3 +79,13 @@ src_managed/
 project/boot/
 .history
 .cache
+/.gitignore
+### SBT template
+# Simple Build Tool
+# http://www.scala-sbt.org/release/docs/Getting-Started/Directories.html#configuring-version-control
+
+### Scala template
+
+# sbt specific
+
+# Scala-IDE specific
