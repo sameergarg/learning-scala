@@ -59,8 +59,6 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     listAfterDeletingMin(h) == listAfterDeletingMin(h).sorted
   }
 
-
-
   property("minimum of the melding of any two heaps should return a minimum of one or the other") = forAll{ (h1: H, h2: H) =>
     min(findMin(h1), findMin(h2)) == findMin(meld(h1, h2))
   }

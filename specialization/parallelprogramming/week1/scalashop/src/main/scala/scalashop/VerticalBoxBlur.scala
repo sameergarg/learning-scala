@@ -3,6 +3,8 @@ package scalashop
 import org.scalameter._
 import common._
 
+import scala.collection.immutable.IndexedSeq
+
 object VerticalBoxBlurRunner {
 
   val standardConfig = config(
@@ -43,8 +45,15 @@ object VerticalBoxBlur {
    *  bottom.
    */
   def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
-    // TODO implement this method using the `boxBlurKernel` method
-    ???
+
+      (from to Math.min(end-1, src.width)).foreach(x =>
+        (0 to src.height-1).foreach { y =>
+          //println(s" for x:$x ,y:$y")
+          val rgba1: RGBA = boxBlurKernel(src, x, y, radius)
+          //print(s"rgba: $rgba1")
+          dst.update(x, y, rgba1)
+        }
+      )
   }
 
   /** Blurs the columns of the source image in parallel using `numTasks` tasks.
@@ -54,8 +63,11 @@ object VerticalBoxBlur {
    *  columns.
    */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
-    // TODO implement using the `task` construct and the `blur` method
-    ???
+    val splitPoints: Range = Range(0, src.width+1).by(numTasks)
+    val strips: IndexedSeq[(RGBA, RGBA)] = splitPoints.zip(splitPoints.tail)
+    strips.map{
+      case (from, end) => task(blur(src, dst, from, end, radius))
+    }
   }
 
 }

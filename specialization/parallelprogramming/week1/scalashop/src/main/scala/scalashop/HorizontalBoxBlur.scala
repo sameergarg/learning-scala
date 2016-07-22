@@ -3,6 +3,8 @@ package scalashop
 import org.scalameter._
 import common._
 
+import scala.collection.immutable.IndexedSeq
+
 object HorizontalBoxBlurRunner {
 
   val standardConfig = config(
@@ -21,14 +23,14 @@ object HorizontalBoxBlurRunner {
     val seqtime = standardConfig measure {
       HorizontalBoxBlur.blur(src, dst, 0, height, radius)
     }
-    println(s"sequential blur time: $seqtime ms")
+    //println(s"sequential blur time: $seqtime ms")
 
     val numTasks = 32
     val partime = standardConfig measure {
       HorizontalBoxBlur.parBlur(src, dst, numTasks, radius)
     }
-    println(s"fork/join blur time: $partime ms")
-    println(s"speedup: ${seqtime / partime}")
+    //println(s"fork/join blur time: $partime ms")
+    //println(s"speedup: ${seqtime / partime}")
   }
 }
 
@@ -42,9 +44,14 @@ object HorizontalBoxBlur {
    *  Within each row, `blur` traverses the pixels by going from left to right.
    */
   def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
-  // TODO implement this method using the `boxBlurKernel` method
-
-  ???
+    (from to Math.min(end-1, src.height)).foreach(y =>
+      (0 to src.width -1).foreach { x =>
+        //println(s" for x:$x ,y:$y")
+        val rgba1: RGBA = boxBlurKernel(src, x, y, radius)
+        //print(s"rgba: $rgba1")
+        dst.update(x, y, rgba1)
+      }
+    )
   }
 
   /** Blurs the rows of the source image in parallel using `numTasks` tasks.
@@ -54,9 +61,11 @@ object HorizontalBoxBlur {
    *  rows.
    */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
-  // TODO implement using the `task` construct and the `blur` method
-
-  ???
+    val splitPoints: Range = Range(0, src.height+1).by(numTasks)
+    val strips: IndexedSeq[(RGBA, RGBA)] = splitPoints.zip(splitPoints.tail)
+    strips.map{
+      case (from, end) => task(blur(src, dst, from, end, radius))
+    }
   }
 
 }

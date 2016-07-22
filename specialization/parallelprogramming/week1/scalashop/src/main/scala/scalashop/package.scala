@@ -35,7 +35,9 @@ package object scalashop {
   /** Image is a two-dimensional matrix of pixel values. */
   class Img(val width: Int, val height: Int, private val data: Array[RGBA]) {
     def this(w: Int, h: Int) = this(w, h, new Array(w * h))
-    def apply(x: Int, y: Int): RGBA = data(y * width + x)
+    def apply(x: Int, y: Int): RGBA = {
+      //println(s"x=$x, y=$y, width=$width")
+      data(y * width + x)}
     def update(x: Int, y: Int, c: RGBA): Unit = data(y * width + x) = c
   }
 
@@ -44,10 +46,11 @@ package object scalashop {
 
 
     val neighboursPosition = {
-      val minRow = clamp(x-radius, 0, src.width)
-      val maxRow = clamp(x + radius, 0, src.width)
-      val minCol = clamp(y - radius, 0, src.height)
-      val maxCol = clamp(y + radius, 0, src.height)
+      val minRow = clamp(x-radius, 0, src.width-1)
+      val maxRow = clamp(x + radius, 0, src.width-1)
+      val minCol = clamp(y - radius, 0, src.height-1)
+      val maxCol = clamp(y + radius,0, src.height-1)
+      //println(s"Region: x:[$minRow to $maxRow] and y:[$minCol to $maxCol]")
       for {
         row <- minRow to maxRow
         col <- minCol to maxCol
@@ -62,11 +65,16 @@ package object scalashop {
       (acc._1 + rgba._1, acc._2 + rgba._2, acc._3 + rgba._3, acc._4 + rgba._4))
 
     def average(combinedRGBA: (Int, Int, Int, Int), neighbours: Int): Int = combinedRGBA match {
-      case (r,g,b,a) => r/neighbours + g/neighbours + b/neighbours + a/neighbours
+      case (r,g,b,a) => {
+        val total = r/neighbours + g/neighbours + b/neighbours + a/neighbours
+        //println(s"R:${red(total)} G: ${green(total)} B: ${blue(total)} A: ${alpha(total)}")
+        red(total) + green(total) + blue(total) + alpha(total)
+      }
     }
-    println(neighboursPosition)
+
+    //println(s"neighbours coordinates $neighboursPosition")
     val neighbours = rgbaNeighbours(neighboursPosition)
-    println(neighbours)
+    //println(s" rgba for neighbours: $neighbours")
 
     if(radius == 0) src(x,y)
     else average(sum(neighbours), neighbours.size)
