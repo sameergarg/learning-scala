@@ -44,17 +44,13 @@ object VerticalBoxBlur {
    *  Within each column, `blur` traverses the pixels by going from top to
    *  bottom.
    */
-  def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
-
-      (from to Math.min(end-1, src.width)).foreach(x =>
-        (0 to src.height-1).foreach { y =>
-          //println(s" for x:$x ,y:$y")
-          val rgba1: RGBA = boxBlurKernel(src, x, y, radius)
-          //print(s"rgba: $rgba1")
-          dst.update(x, y, rgba1)
-        }
-      )
-  }
+  def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit =
+    for(x <- from until end)
+      for(y <- 0 until src.height) {
+        val calculatedRGBA: RGBA = boxBlurKernel(src, x, y, radius)
+        println(s"($x ,$y) and radius:$radius, blurred RGBA:$calculatedRGBA")
+        dst.update(x, y, calculatedRGBA)
+      }
 
   /** Blurs the columns of the source image in parallel using `numTasks` tasks.
    *
@@ -63,8 +59,9 @@ object VerticalBoxBlur {
    *  columns.
    */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
-    val splitPoints: Range = Range(0, src.width+1).by(numTasks)
-    val strips: IndexedSeq[(RGBA, RGBA)] = splitPoints.zip(splitPoints.tail)
+    val steps = src.width / Math.min(numTasks, src.width)
+    val partitions = 0 to src.width by steps
+    val strips = partitions.zip(partitions.tail)
     strips.map{
       case (from, end) => task(blur(src, dst, from, end, radius))
     }.foreach(_.join())

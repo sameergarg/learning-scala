@@ -44,7 +44,6 @@ package object scalashop {
   /** Computes the blurred RGBA value of a single pixel of the input image. */
   def boxBlurKernel(src: Img, x: Int, y: Int, radius: Int): RGBA = {
 
-
     val neighboursPosition = {
       val minRow = clamp(x-radius, 0, src.width-1)
       val maxRow = clamp(x + radius, 0, src.width-1)
@@ -68,7 +67,7 @@ package object scalashop {
       case (r,g,b,a) => rgba(r/neighbours, g/neighbours,  b/neighbours, a/neighbours)
     }
 
-    //println(s"neighbours coordinates $neighboursPosition")
+    println(s"neighbours coordinates $neighboursPosition")
     val neighbours = neighboursRGBA(neighboursPosition)
     //println(s" rgba for neighbours: $neighbours")
 

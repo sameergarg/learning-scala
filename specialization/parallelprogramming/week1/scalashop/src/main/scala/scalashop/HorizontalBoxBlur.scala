@@ -30,7 +30,7 @@ object HorizontalBoxBlurRunner {
       HorizontalBoxBlur.parBlur(src, dst, numTasks, radius)
     }
     //println(s"fork/join blur time: $partime ms")
-    //println(s"speedup: ${seqtime / partime}")
+    println(s"speedup: ${seqtime / partime}")
   }
 }
 
@@ -43,16 +43,11 @@ object HorizontalBoxBlur {
    *
    *  Within each row, `blur` traverses the pixels by going from left to right.
    */
-  def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
-    (from to Math.min(end-1, src.height)).foreach(y =>
-      (0 to src.width -1).foreach { x =>
-        //println(s" for x:$x ,y:$y")
-        val rgba1: RGBA = boxBlurKernel(src, x, y, radius)
-        //print(s"rgba: $rgba1")
-        dst.update(x, y, rgba1)
-      }
-    )
-  }
+  def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit =
+    for(y <- from until end)
+      for(x <- 0 until src.width)
+        dst.update(x, y, boxBlurKernel(src, x, y, radius))
+
 
   /** Blurs the rows of the source image in parallel using `numTasks` tasks.
    *
@@ -61,11 +56,12 @@ object HorizontalBoxBlur {
    *  rows.
    */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
-    val splitPoints: Range = Range(0, src.height+1).by(numTasks)
-    val strips: IndexedSeq[(RGBA, RGBA)] = splitPoints.zip(splitPoints.tail)
+    val steps = src.height / Math.min(numTasks, src.height)
+    val partitions = 0 to src.height by steps
+    val strips = partitions.zip(partitions.tail)
     strips.map{
       case (from, end) => task(blur(src, dst, from, end, radius))
-    }.foreach(_.join())
-  }
+    }
+  }.foreach(_.join())
 
 }
