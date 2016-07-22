@@ -57,7 +57,7 @@ package object scalashop {
       } yield ((row, col))
     }
 
-    val rgbaNeighbours: Seq[(Int, Int)] => Seq[(Int, Int, Int, Int)] = positions => positions.map{
+    val neighboursRGBA: Seq[(Int, Int)] => Seq[(Int, Int, Int, Int)] = positions => positions.map{
       case (x,y) => val rgba = src(x,y); (red(rgba), green(rgba), blue(rgba), alpha(rgba))
     }
 
@@ -65,15 +65,11 @@ package object scalashop {
       (acc._1 + rgba._1, acc._2 + rgba._2, acc._3 + rgba._3, acc._4 + rgba._4))
 
     def average(combinedRGBA: (Int, Int, Int, Int), neighbours: Int): Int = combinedRGBA match {
-      case (r,g,b,a) => {
-        val total = r/neighbours + g/neighbours + b/neighbours + a/neighbours
-        //println(s"R:${red(total)} G: ${green(total)} B: ${blue(total)} A: ${alpha(total)}")
-        red(total) + green(total) + blue(total) + alpha(total)
-      }
+      case (r,g,b,a) => rgba(r/neighbours, g/neighbours,  b/neighbours, a/neighbours)
     }
 
     //println(s"neighbours coordinates $neighboursPosition")
-    val neighbours = rgbaNeighbours(neighboursPosition)
+    val neighbours = neighboursRGBA(neighboursPosition)
     //println(s" rgba for neighbours: $neighbours")
 
     if(radius == 0) src(x,y)

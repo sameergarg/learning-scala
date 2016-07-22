@@ -65,7 +65,7 @@ object HorizontalBoxBlur {
     val strips: IndexedSeq[(RGBA, RGBA)] = splitPoints.zip(splitPoints.tail)
     strips.map{
       case (from, end) => task(blur(src, dst, from, end, radius))
-    }
+    }.foreach(_.join())
   }
 
 }
