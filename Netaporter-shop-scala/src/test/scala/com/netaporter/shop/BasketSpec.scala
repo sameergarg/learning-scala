@@ -27,11 +27,11 @@ class BasketSpec extends WordSpec with Matchers {
     }
 
     "allow to remove products from the basket" in new BasketWithSetup {
-      add(1).remove(1).getBasketProducts shouldBe List.empty
+      add(1).remove(1).getBasketProducts shouldBe empty
     }
 
     "not fail to remove a product which isn't in basket" in new BasketWithSetup {
-      remove(100).getBasketProducts shouldBe List.empty
+      remove(100).getBasketProducts shouldBe empty
     }
 
     "not empty the basket when basket is emptied partially" in new BasketWithSetup {
