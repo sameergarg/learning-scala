@@ -22,12 +22,12 @@ object Application extends App {
   input foreach {
       case "add" :: productId :: Nil =>
         val id = toId(productId)
-        if(Inventory.allProducts.exists(_.id == id)) basket.add(id) else println(s"There is no product for productId $productId")
+        NetAPorterInventory.findProduct(id).map(basket.add).getOrElse(println(s"There is no product for productId $productId"))
       case "remove" :: productId :: Nil =>
         val id = toId(productId)
         basket.remove(id)
       case "list" :: Nil =>
-        Inventory.allProducts.foreach(println)
+        NetAPorterInventory.listProducts.foreach(println)
       case "total" :: Nil =>
         println(s"Total to pay: £${basket.total}")
       case _ =>

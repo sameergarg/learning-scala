@@ -2,11 +2,13 @@ package com.netaporter.shop
 
 import scala.io.Source
 
-trait ProductService {
-  def listProducts: Iterator[Product]
+trait Inventory {
+  def listProducts: List[Product]
+
+  def findProduct(productId: Long) = listProducts.find(_.id == productId)
 }
 
-trait FileBackedProductService extends ProductService {
+trait FileBackedInventory extends Inventory {
 
   private[shop] val productItems: Iterator[String] = Source.fromInputStream(getClass.getResourceAsStream("/Items.csv"))
     .getLines()
@@ -20,10 +22,8 @@ trait FileBackedProductService extends ProductService {
     case Array(id, name, price) => Product(id.toLong, name, parseAmount(price))
   }
 
-  def listProducts: Iterator[Product] = productItems.map(parseToProduct)
+  lazy val listProducts: List[Product] = productItems.map(parseToProduct).toList
 }
 
-object Inventory extends FileBackedProductService {
-  val allProducts = listProducts.toList
-}
+object NetAPorterInventory extends FileBackedInventory
 

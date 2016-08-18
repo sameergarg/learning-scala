@@ -2,16 +2,12 @@ package com.netaporter.shop
 
 trait Basket {
 
-  def getInventory: List[Product]
-
   var products: List[Product] = List.empty
 
-  def getBasketProducts = products
+  def productsInside = products
 
-  def add(productId: Long): Basket = {
-    products = getInventory
-      .find(_.id == productId)
-      .getOrElse(throw new IllegalArgumentException(s"product corresponding to the specified product id $productId doesn't exists in inventory")) :: products
+  def add(product: Product): Basket = {
+    products = product :: products
     this
   }
 
@@ -23,6 +19,4 @@ trait Basket {
   def total = products.map(_.price).sum
 }
 
-class ShoppingBasket extends Basket {
-  override def getInventory: List[Product] = Inventory.allProducts
-}
+class ShoppingBasket extends Basket
