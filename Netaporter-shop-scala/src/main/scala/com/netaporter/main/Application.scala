@@ -22,7 +22,8 @@ object Application extends App {
   input foreach {
       case "add" :: productId :: Nil =>
         val id = toId(productId)
-        if(Inventory.allProducts.exists(_.id == id)) basket.add(id) else println(s"There is no product for productId $productId")
+        Inventory.findProduct(id).map(basket.add(_)).getOrElse(println(s"There is no product for productId $productId"))
+        //if(Inventory.allProducts.exists(_.id == id)) basket.add(id) else println(s"There is no product for productId $productId")
       case "remove" :: productId :: Nil =>
         val id = toId(productId)
         basket.remove(id)
