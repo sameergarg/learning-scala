@@ -1,0 +1,39 @@
+package com.netaporter.main
+
+import com.netaporter.shop._
+
+object Application extends App {
+
+  println("************************************")
+  println("* Welcome to the Net-A-Porter Shop *")
+  println("************************************")
+  println("Enter \"Q\" to Quit")
+  println("Enter \"add <ProductId>\" to add to basket")
+  println("Enter \"remove <ProductId>\" to remove from basket")
+  println("Enter \"list\" to show a list of products in the inventory")
+  println("Enter \"total\" to show the total price of the basket")
+
+  def toId: String => Long = _.trim.toLong
+
+  val input  = io.Source.stdin.getLines.takeWhile(!_.equals("Q")).map(_.split(" ").toList)
+
+  val basket = new ShoppingBasket()
+
+  input foreach {
+      case "add" :: productId :: Nil =>
+        val id = toId(productId)
+        if(Inventory.allProducts.exists(_.id == id)) basket.add(id) else println(s"There is no product for productId $productId")
+      case "remove" :: productId :: Nil =>
+        val id = toId(productId)
+        basket.remove(id)
+      case "list" :: Nil =>
+        Inventory.allProducts.foreach(println)
+      case "total" :: Nil =>
+        println(s"Total to pay: £${basket.total}")
+      case _ =>
+        println(s"Sorry, that is not a valid command")
+    }
+
+  println("Thanks for shopping at Net-a-Porter!")
+
+}
