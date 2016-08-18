@@ -4,7 +4,7 @@ import scala.io.Source
 
 trait Inventory {
 
-  def listProducts: Iterator[Product]
+  def listProducts: List[Product]
 
   def findProduct(productId: Long): Option[Product] = listProducts.find(_.id == productId)
 }
@@ -23,12 +23,8 @@ trait FileBackedInventory extends Inventory {
     case Array(id, name, price) => Product(id.toLong, name, parseAmount(price))
   }
 
-  def listProducts: Iterator[Product] = productItems.map(parseToProduct)
+  lazy val listProducts: List[Product] = productItems.map(parseToProduct).toList
 }
 
-object Inventory extends FileBackedInventory {
-
-  lazy val allProducts = listProducts.toList
-
-}
+object NetAPorterInventory extends FileBackedInventory
 

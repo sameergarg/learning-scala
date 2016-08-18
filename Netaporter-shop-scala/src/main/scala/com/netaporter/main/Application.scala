@@ -17,18 +17,20 @@ object Application extends App {
 
   val input  = io.Source.stdin.getLines.takeWhile(!_.equals("Q")).map(_.split(" ").toList)
 
-  val basket = new ShoppingBasket()
+  var basket = ShoppingBasket()
 
   input foreach {
       case "add" :: productId :: Nil =>
         val id = toId(productId)
-        Inventory.findProduct(id).map(basket.add(_)).getOrElse(println(s"There is no product for productId $productId"))
-        //if(Inventory.allProducts.exists(_.id == id)) basket.add(id) else println(s"There is no product for productId $productId")
+        NetAPorterInventory.findProduct(id) match {
+          case Some(product) => basket = basket.add(product)
+          case _ => println(s"There is no product for productId $productId")
+        }
       case "remove" :: productId :: Nil =>
         val id = toId(productId)
-        basket.remove(id)
+        basket = basket.remove(id)
       case "list" :: Nil =>
-        Inventory.allProducts.foreach(println)
+        NetAPorterInventory.listProducts.foreach(println)
       case "total" :: Nil =>
         println(s"Total to pay: £${basket.total}")
       case _ =>

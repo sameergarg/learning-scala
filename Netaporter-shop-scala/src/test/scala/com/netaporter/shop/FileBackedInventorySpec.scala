@@ -2,7 +2,7 @@ package com.netaporter.shop
 
 import org.scalatest.{Matchers, WordSpec}
 
-class FileBackedProductServiceSpec extends WordSpec with Matchers {
+class FileBackedInventorySpec extends WordSpec with Matchers {
 
   "A list of products" should {
     "be read from the csv file" in new FileBackedInventory {
@@ -18,7 +18,7 @@ class FileBackedProductServiceSpec extends WordSpec with Matchers {
     }
 
     "be created from the csv file" in new FileBackedInventory {
-      private val products = listProducts.toList
+      private val products = listProducts
       products.head.toString shouldBe "ProductId=1, Name=Short Sleeve Jumper, Price=£9.99"
     }
   }
