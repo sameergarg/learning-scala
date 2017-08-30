@@ -15,7 +15,7 @@ class GzipSpec extends WordSpec with Matchers {
 
     "compress big text" in {
       val input = FileGenerator.generateByteArray(10000000).toArray
-      val compressedOutput = Gzip.compress(input).size should be < input.size
+      Gzip.compress(input).size should be < input.size
     }
   }
 }
