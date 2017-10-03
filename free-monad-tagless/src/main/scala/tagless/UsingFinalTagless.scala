@@ -16,21 +16,8 @@ object UsingFinalTagless extends App {
     def updateUser(user: User): F[Unit]
   }
 
-  //program using algebra
-  class UserService[F[_] : Monad](userRepository: UserRepositoryAlg[F]) {
-    def changeName(name: Name, userId: UserId): F[Either[String, Unit]] =
-      userRepository.findUser(userId).flatMap {
-        case None =>
-          implicitly[Monad[F]].pure(Left("No such user"))
-        case Some(user) =>
-          println("changed name")
-          val changed = user.copy(name=name)
-          userRepository.updateUser(changed).map(_ => Right())
-      }
-  }
-
   //interpreter
-  val futureInterpreter = new UserRepositoryAlg[Future] {
+  val futureUserServiceInterpreter = new UserRepositoryAlg[Future] {
     override def findUser(userId: UserId) = userId match {
       case even if (isEven(even.id)) => Future.successful(Some(User(even, Name("even"))))
       case odd if (isOdd(odd.id)) => Future.successful(None)
@@ -42,9 +29,35 @@ object UsingFinalTagless extends App {
     }
   }
 
+  //Email service
+  trait EmailServiceAlg[F[_]] {
+    def sendEmail(emailId: String, subject: String, body: String): Future[Unit]
+  }
+
+  val futureEmailServiceInterpreter = new EmailServiceAlg[Future] {
+    override def sendEmail(emailId: String, subject: String, body: String): Future[Unit] = {
+      println(s"Sending email to $emailId with subject: $subject and body: $body")
+      Future.successful(())
+    }
+  }
+
+  //program using algebra
+  class ChangeUserService[F[_] : Monad](userRepository: UserRepositoryAlg[F], emailService: EmailServiceAlg[F]) {
+    def changeName(name: Name, userId: UserId): F[Either[String, Unit]] =
+      userRepository.findUser(userId).flatMap {
+        case None =>
+          implicitly[Monad[F]].pure(Left("No such user"))
+        case Some(user) =>
+          println("changed name")
+          val changed = user.copy(name=name)
+          userRepository.updateUser(changed).map(_ => Right())
+      }
+  }
+
+
   //test
   for (i <- 1 to 10) {
-    val result: Future[Either[String, Unit]] = new UserService(futureInterpreter).changeName(Name("test"), UserId(i))
+    val result: Future[Either[String, Unit]] = new ChangeUserService(futureUserServiceInterpreter, futureEmailServiceInterpreter).changeName(Name("test"), UserId(i))
     println(s"userId: $i => ${Await.result(result, Duration.Inf)}")
 
   }
