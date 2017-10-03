@@ -16,7 +16,7 @@ object UsingFinalTagless extends App {
     def updateUser(user: User): F[Unit]
   }
 
-  //program
+  //program using algebra
   class UserService[F[_] : Monad](userRepository: UserRepositoryAlg[F]) {
     def changeName(name: Name, userId: UserId): F[Either[String, Unit]] =
       userRepository.findUser(userId).flatMap {
@@ -42,6 +42,7 @@ object UsingFinalTagless extends App {
     }
   }
 
+  //test
   for (i <- 1 to 10) {
     val result: Future[Either[String, Unit]] = new UserService(futureInterpreter).changeName(Name("test"), UserId(i))
     println(s"userId: $i => ${Await.result(result, Duration.Inf)}")
