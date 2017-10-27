@@ -1,7 +1,5 @@
 package katas.typeclasses
 
-import java.awt.print.Printable
-
 /**
   *
   */

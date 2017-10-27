@@ -1,12 +1,11 @@
 package katas.quickcheck
 
-import org.scalacheck.{Arbitrary, Gen, Prop, Properties, _}
-import org.scalacheck.Prop._
+
 import Math._
 
-import org.scalacheck.Arbitrary._
-import org.scalacheck.Gen._
 
+
+/*
 abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
 
   lazy val genHeap: Gen[H] = for{
@@ -65,3 +64,4 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
   }
 
 }
+*/
