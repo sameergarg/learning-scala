@@ -17,7 +17,10 @@ object Fluffy {
   // Exercise 1
   // Relative Difficulty: 1
   def ListFluffy: Fluffy[List] =  new Fluffy[List] {
-    override def furry[A, B](f: A => B, fa: List[A]): List[B] = fa.map(f)
+    override def furry[A, B](f: A => B, fa: List[A]): List[B] = fa match {
+      case Nil => Nil
+      case a::as => f(a) :: furry(f, as)
+    }
   }
 
   // Exercise 2
@@ -41,14 +44,19 @@ object Fluffy {
   // Exercise 4
   // Relative Difficulty: 1
   def ArrayFluffy: Fluffy[Array] = new Fluffy[Array] {
-    override def furry[A, B](f: A => B, fa: Array[A]): Array[B] = fa.map(f)
+    override def furry[A, B](f: A => B, fa: Array[A]): Array[B] = fa.map(f).asInstanceOf[Array[B]]
+      /*
+      fa match {
+      case Array.empty => Array()
+      case as @ Array(_) =>
+    }*/
   }
 
   // Exercise 5
   // Relative Difficulty: 5
   def Function1Fluffy[X]: Fluffy[PartialType[Function1, X]#Apply] = new Fluffy[PartialType[Function, X]#Apply] {
-    override def furry[A, B](f: A => B, fa: PartialType[Function, X]#Apply[A]): PartialType[Function, X]#Apply[B] =
-      (v1: X) => f(v1)
+    override def furry[A, B](f: A => B, fa: PartialType[Function, X]#Apply[A]): PartialType[Function, A]#Apply[B] =
+      (v1: A) => f(v1)
   }
 
 
@@ -68,7 +76,7 @@ object Fluffy {
 
 //monad
 trait Misty[M[_]] extends Fluffy[M] {
-  def banana[A, B](f: A => M[B], ma: M[A]): M[B] //flat map
+  def banana[A, B](f: A => M[B], ma: M[A]): M[B] //flat map or bind
 
   def unicorn[A](a: A): M[A] //unit
 
@@ -106,7 +114,7 @@ object Misty {
   // Exercise 12
   // Relative Difficulty: 2
   def ArrayMisty: Misty[Array] = new Misty[Array] {
-    override def banana[A, B](f: A => Array[B], ma: Array[A]): Array[B] = ma.flatMap(f(_))
+    override def banana[A, B](f: A => Array[B], ma: Array[A]): Array[B] = ma.flatMap(f(_)).asInstanceOf[Array[B]]
 
     override def unicorn[A](a: A): Array[A] = Array(a)
   }
@@ -147,7 +155,8 @@ object Misty {
 
   // Exercise 17
   // Relative Difficulty: 6
-  def apple[M[_], A, B](ma: M[A], mf: M[A => B], m: Misty[M]): M[B] = m.banana(a => m.banana((f:A => B) => m.unicorn(f(a)), mf), ma) // ma.banana(a => (mf.furry(f => f(a)))
+  def apple[M[_], A, B](ma: M[A], mf: M[A => B], m: Misty[M]): M[B] =
+    m.banana(a => m.banana((f:A => B) => m.unicorn(f(a)), mf), ma) // ma.banana(a => (mf.furry(f => f(a)))
 
   //m.banana(a => m.furry((f:A) => f(a), mf), ma)
 
@@ -160,7 +169,7 @@ object Misty {
   // Exercise 18
   // Relative Difficulty: 6
   def moppy[M[_], A, B](as: List[A], f: A => M[B], m: Misty[M]): M[List[B]] =
-    error("todo")
+    ???
 }
 
 object AdvancedFun {
@@ -168,9 +177,9 @@ object AdvancedFun {
 
   // Exercise 19
   // Relative Difficulty: 9
-  def StateFluffy[S]: Fluffy[PartialType[State, S]#Apply] = error("todo")
+  def StateFluffy[S]: Fluffy[PartialType[State, S]#Apply] = ???
 
   // Exercise 20
   // Relative Difficulty: 10
-  def StateMisty[S]: Misty[PartialType[State, S]#Apply] = error("todo")
+  def StateMisty[S]: Misty[PartialType[State, S]#Apply] = ???
 }
