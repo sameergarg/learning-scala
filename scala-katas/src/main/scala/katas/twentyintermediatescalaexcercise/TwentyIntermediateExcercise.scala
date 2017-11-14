@@ -1,3 +1,4 @@
+
 package katas.twentyintermediatescalaexcercise
 
 import scala.collection.immutable.Stream.Empty
@@ -16,10 +17,10 @@ trait Fluffy[F[_]] {
 object Fluffy {
   // Exercise 1
   // Relative Difficulty: 1
-  def ListFluffy: Fluffy[List] =  new Fluffy[List] {
+  def ListFluffy: Fluffy[List] = new Fluffy[List] {
     override def furry[A, B](f: A => B, fa: List[A]): List[B] = fa match {
       case Nil => Nil
-      case a::as => f(a) :: furry(f, as)
+      case a :: as => f(a) :: furry(f, as)
     }
   }
 
@@ -45,11 +46,12 @@ object Fluffy {
   // Relative Difficulty: 1
   def ArrayFluffy: Fluffy[Array] = new Fluffy[Array] {
     override def furry[A, B](f: A => B, fa: Array[A]): Array[B] = fa.map(f).asInstanceOf[Array[B]]
-      /*
-      fa match {
-      case Array.empty => Array()
-      case as @ Array(_) =>
-    }*/
+
+    /*
+    fa match {
+    case Array.empty => Array()
+    case as @ Array(_) =>
+  }*/
   }
 
   // Exercise 5
@@ -64,7 +66,7 @@ object Fluffy {
   // Relative Difficulty: 6
   def EitherLeftFluffy[X]: Fluffy[PartialType[LeftProjection, X]#Flip] = new Fluffy[PartialType[LeftProjection, X]#Flip] {
     override def furry[A, B](f: A => B, fa: PartialType[LeftProjection, X]#Flip[A]): PartialType[LeftProjection, X]#Flip[B] =
-        fa.map(f).left
+      fa.map(f).left
   }
 
   // Exercise 7
@@ -116,7 +118,7 @@ object Misty {
   def ArrayMisty: Misty[Array] = new Misty[Array] {
     override def banana[A, B](f: A => Array[B], ma: Array[A]): Array[B] = ma.flatMap(f(_)).asInstanceOf[Array[B]]
 
-    override def unicorn[A](a: A): Array[A] = Array(a)
+    override def unicorn[A](a: A): Array[A] = ??? //Array(a)
   }
 
   // Exercise 13
@@ -134,7 +136,7 @@ object Misty {
   // Relative Difficulty: 7
   def EitherLeftMisty[X]: Misty[PartialType[Either.LeftProjection, X]#Flip] = new Misty[PartialType[LeftProjection, X]#Flip] {
     override def banana[A, B](f: A => PartialType[LeftProjection, X]#Flip[B], ma: PartialType[LeftProjection, X]#Flip[A]): PartialType[LeftProjection, X]#Flip[B] =
-    LeftProjection(ma.flatMap(f andThen (_.e)))
+      LeftProjection(ma.flatMap(f andThen (_.e)))
 
     override def unicorn[A](a: A): PartialType[LeftProjection, X]#Flip[A] = Left(a).left
   }
@@ -151,35 +153,35 @@ object Misty {
 
   // Exercise 16
   // Relative Difficulty: 3
-  def jellybean[M[_], A](ma: M[M[A]], m: Misty[M]): M[A] = m.banana((a: M[A]) => a , ma)
+  def jellybean[M[_], A](ma: M[M[A]], m: Misty[M]): M[A] = m.banana((a: M[A]) => a, ma)
 
   // Exercise 17
   // Relative Difficulty: 6
   def apple[M[_], A, B](ma: M[A], mf: M[A => B], m: Misty[M]): M[B] =
-    m.banana(a => m.banana((f:A => B) => m.unicorn(f(a)), mf), ma) // ma.banana(a => (mf.furry(f => f(a)))
-
-  //m.banana(a => m.furry((f:A) => f(a), mf), ma)
-
-    /*ma.flatMap(a => mf.map(f => f(a)))
-    for {
-    a <- ma
-    f <- mf
-  } yield f(a)*/
+    m.banana((a: A) => m.furry((fn: A => B) => fn(a), mf), ma)
 
   // Exercise 18
   // Relative Difficulty: 6
   def moppy[M[_], A, B](as: List[A], f: A => M[B], m: Misty[M]): M[List[B]] =
-    ???
+    as.foldLeft(m.unicorn(List.empty[B])){(mlb, a) =>
+      val mb: M[B] = f(a)
+      m.banana((lb:List[B]) => m.furry((b:B) => b::lb , mb), mlb)
+    }
+  //TODO using apple
 }
 
 object AdvancedFun {
+
   case class State[S, A](f: S => (S, A))
 
   // Exercise 19
   // Relative Difficulty: 9
-  def StateFluffy[S]: Fluffy[PartialType[State, S]#Apply] = ???
+  def StateFluffy[S]: Fluffy[PartialType[State, S]#Apply] = new Fluffy[PartialType[State, S]#Apply] {
+    override def furry[A, B](f: A => B, fa: PartialType[State, S]#Apply[A]): PartialType[State, S]#Apply[B] = ???
+  }
 
   // Exercise 20
   // Relative Difficulty: 10
   def StateMisty[S]: Misty[PartialType[State, S]#Apply] = ???
 }
+
