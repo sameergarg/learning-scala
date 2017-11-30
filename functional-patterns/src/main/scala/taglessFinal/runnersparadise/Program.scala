@@ -1,19 +1,24 @@
 package taglessFinal.runnersparadise
 
 import cats.Monad
-import cats.implicits._
+import cats.data.OptionT
 import taglessFinal.runnersparadise.Algebra.RaceAlgebra.RaceId
 import taglessFinal.runnersparadise.Algebra.RegistrationAlgebra._
 import taglessFinal.runnersparadise.Algebra.RunnerAlgebra._
-import taglessFinal.runnersparadise.Algebra.{Error, RaceAlgebra, RegistrationAlgebra, RunnerAlgebra}
+import taglessFinal.runnersparadise.Algebra.{RaceAlgebra, RegistrationAlgebra, RunnerAlgebra}
+import scala.language.higherKinds
+
 
 object Program {
 
-  class RegisterRunnerForRace[F[_]: Monad : RunnerAlgebra: RaceAlgebra: RegistrationAlgebra] {
-
-    def registerForRace(runnerId: RunnerId, raceId: RaceId): F[Either[Error, Reg]] =
-      for {
-        runner <- RunnerAlgebra[F].findRunner(runnerId)
-      } yield {???}
+  class RegisterRunnerForRace[F[_] : Monad : RunnerAlgebra : RaceAlgebra : RegistrationAlgebra]() {
+    def registerForRace(runnerId: RunnerId, raceId: RaceId): F[Option[Reg]] = {
+      (for {
+        runner <- OptionT(RunnerAlgebra[F].findRunner(runnerId))
+        race   <- OptionT(RaceAlgebra[F].findRace(raceId))
+        reg    <- OptionT(RegistrationAlgebra[F].findReg(raceId)).orElse(OptionT.pure[F](Reg(race, Set.empty)))
+        _      <- OptionT.pure[F](RegistrationAlgebra[F].saveReg(reg.add(runner)))
+      } yield reg).value
+    }
   }
 }

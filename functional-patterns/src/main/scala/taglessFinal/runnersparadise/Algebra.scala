@@ -1,7 +1,7 @@
 package taglessFinal.runnersparadise
 
 import taglessFinal.runnersparadise.Algebra.RaceAlgebra.{Race, RaceId}
-import taglessFinal.runnersparadise.Algebra.RegistrationAlgebra.{Reg, RegId}
+import taglessFinal.runnersparadise.Algebra.RegistrationAlgebra.{Reg}
 import taglessFinal.runnersparadise.Algebra.RunnerAlgebra.{Runner, RunnerId}
 
 object Algebra {
@@ -14,9 +14,11 @@ object Algebra {
 
   object RunnerAlgebra {
 
-    case class Runner(value: String) extends AnyVal
+    final case class RunnerId(value: Int) extends AnyVal
 
-    case class RunnerId(value: Int) extends AnyVal
+    final case class Name(value: String) extends AnyVal
+
+    case class Runner(id: RunnerId, name: Name)
 
     def apply[F[_]: RunnerAlgebra]: RunnerAlgebra[F] = implicitly
 
@@ -32,25 +34,27 @@ object Algebra {
 
     def apply[F[_]: RaceAlgebra]: RaceAlgebra[F] = implicitly
 
-    case class RaceId(value: Int) extends AnyVal
+    final case class RaceId(value: Int) extends AnyVal
 
-    case class Race(value: String) extends AnyVal
+    final case class Name(value: String) extends AnyVal
+
+    case class Race(id: RaceId, name: Name, maxParticipants: Int)
 
   }
 
   trait RegistrationAlgebra[F[_]] {
-    def findRace(id: RegId): F[Option[Reg]]
+    def findReg(id: RaceId): F[Option[Reg]]
 
-    def saveRace(reg: Reg): F[Unit]
+    def saveReg(reg: Reg): F[Unit]
   }
 
   object RegistrationAlgebra {
 
     def apply[F[_]: RegistrationAlgebra]: RegistrationAlgebra[F] = implicitly
 
-    case class RegId(value: Int) extends AnyVal
-
-    case class Reg(value: String) extends AnyVal
+    case class Reg(race: Race, runners: Set[Runner]) {
+      def add(runner: Runner) = this.copy(runners = runners + runner)
+    }
 
   }
 
@@ -59,5 +63,7 @@ object Algebra {
   object Error {
     case object RegistrationError extends Error
   }
+
+  trait CombinedAlgebra[F[_]] extends RunnerAlgebra[F] with RaceAlgebra[F] with RegistrationAlgebra[F]
 
 }
