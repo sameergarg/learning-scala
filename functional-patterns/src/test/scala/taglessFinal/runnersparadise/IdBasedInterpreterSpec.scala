@@ -2,7 +2,7 @@ package taglessFinal.runnersparadise
 
 import cats.Id
 import org.scalatest.Matchers
-import taglessFinal.runnersparadise.Interpreter.IdBased._
+import taglessFinal.runnersparadise.interpreter.IdBasedInterpreter._
 import taglessFinal.runnersparadise.Program.RegisterRunnerForRace
 import taglessFinal.runnersparadise.domain.Model.Race.{RaceId}
 import taglessFinal.runnersparadise.domain.Model.Runner.{RunnerId}

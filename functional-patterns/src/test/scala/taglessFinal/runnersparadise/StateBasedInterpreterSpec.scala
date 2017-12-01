@@ -1,7 +1,7 @@
 package taglessFinal.runnersparadise
 
 import org.scalatest.Matchers
-import taglessFinal.runnersparadise.Interpreter.StateBased._
+import taglessFinal.runnersparadise.interpreter.StateBasedInterpreter._
 import taglessFinal.runnersparadise.Program.RegisterRunnerForRace
 import taglessFinal.runnersparadise.domain.Model.Race.{Race, RaceId}
 import taglessFinal.runnersparadise.domain.Model.Registration.Reg
