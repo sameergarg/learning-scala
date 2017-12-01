@@ -1,15 +1,14 @@
 package taglessFinal.runnersparadise
 
 import org.scalatest.Matchers
-import taglessFinal.runnersparadise.Interpreter._
+import taglessFinal.runnersparadise.Interpreter.StateBased._
 import taglessFinal.runnersparadise.Program.RegisterRunnerForRace
 import taglessFinal.runnersparadise.domain.Model.Race.{Race, RaceId}
 import taglessFinal.runnersparadise.domain.Model.Registration.Reg
 import taglessFinal.runnersparadise.domain.Model.Runner.{Name, Runner, RunnerId}
-import taglessFinal.runnersparadise.domain.RunnersDB
 import taglessFinal.runnersparadise.domain.RunnersDB._
 
-class RegisterRunnerForRaceSpec extends org.scalatest.WordSpec with Matchers {
+class StateBasedInterpreterSpec extends org.scalatest.WordSpec with Matchers {
   val interpreter = new RegisterRunnerForRace[DBState]()
 
   val sam = Runner(RunnerId(1), Name("Sam"))
