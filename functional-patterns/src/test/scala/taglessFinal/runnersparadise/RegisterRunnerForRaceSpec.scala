@@ -2,10 +2,10 @@ package taglessFinal.runnersparadise
 
 import cats.Id
 import org.scalatest.Matchers
-import taglessFinal.runnersparadise.Algebra.RaceAlgebra.RaceId
-import taglessFinal.runnersparadise.Algebra.RunnerAlgebra.RunnerId
 import taglessFinal.runnersparadise.Interpreter._
 import taglessFinal.runnersparadise.Program.RegisterRunnerForRace
+import taglessFinal.runnersparadise.domain.Model.Race.RaceId
+import taglessFinal.runnersparadise.domain.Model.Runner.RunnerId
 
 class RegisterRunnerForRaceSpec extends org.scalatest.WordSpec with Matchers {
 
