@@ -1,7 +1,7 @@
 package taglessFinal.runnersparadise.domain
 
-import taglessFinal.runnersparadise.domain.Model.Race.Race
-import taglessFinal.runnersparadise.domain.Model.Runner.Runner
+import taglessFinal.runnersparadise.domain.Model.Race.{Race, RaceId}
+import taglessFinal.runnersparadise.domain.Model.Runner.{Runner, RunnerId}
 
 object Model {
 
@@ -28,16 +28,18 @@ object Model {
   object Registration {
 
     case class Reg(race: Race, runners: Set[Runner]) {
-      def add(runner: Runner) = this.copy(runners = runners + runner)
+      def add(runner: Runner): Reg = this.copy(runners = runners + runner)
     }
 
   }
 
-  sealed trait Error extends Exception
+  sealed trait RunnersParadiseError extends Exception
 
-  object Error {
+  object RunnersParadiseError {
 
-    case object RegistrationError extends Error
+    case object RegistrationError extends RunnersParadiseError
+    case class RunnerDoesNotExist(id: RunnerId) extends RunnersParadiseError
+    case class RaceDoesNotExist(id: RaceId) extends RunnersParadiseError
 
   }
 
