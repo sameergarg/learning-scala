@@ -1,6 +1,7 @@
 package taglessFinal.runnersparadise.domain
 
 import taglessFinal.runnersparadise.domain.Model.Race.{Race, RaceId}
+import taglessFinal.runnersparadise.domain.Model.Registration.Reg
 import taglessFinal.runnersparadise.domain.Model.Runner.{Runner, RunnerId}
 
 object Model {
@@ -28,7 +29,11 @@ object Model {
   object Registration {
 
     case class Reg(race: Race, runners: Set[Runner]) {
-      def add(runner: Runner): Reg = this.copy(runners = runners + runner)
+      def add(runner: Runner): Option[Reg] =
+        if(runners.size < race.maxParticipants)
+          Some(this.copy(runners = runners + runner))
+        else
+          None
     }
 
   }
@@ -40,6 +45,8 @@ object Model {
     case object RegistrationError extends RunnersParadiseError
     case class RunnerDoesNotExist(id: RunnerId) extends RunnersParadiseError
     case class RaceDoesNotExist(id: RaceId) extends RunnersParadiseError
+    case class RegistrationCannotBeSaved(reg: Reg) extends RunnersParadiseError
+    case object RaceFullyBooked extends RunnersParadiseError
 
   }
 
