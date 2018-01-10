@@ -1,6 +1,7 @@
 package katas.sorting
 
-import org.joda.time.{LocalDate, DateTime}
+import org.joda.time.{DateTime, LocalDate}
+
 
 case class Person(name: String, dob: DateTime, dod: Option[DateTime] = None)
 

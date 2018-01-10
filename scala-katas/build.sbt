@@ -4,7 +4,7 @@ version := "1.0"
 
 scalaVersion := "2.12.3"
 
-libraryDependencies += "joda-time" % "joda-time" % "2.6"
+libraryDependencies += "joda-time" % "joda-time" % "2.8.1"
 
 libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
 

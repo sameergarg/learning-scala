@@ -56,10 +56,11 @@ object Fluffy {
 
   // Exercise 5
   // Relative Difficulty: 5
-  def Function1Fluffy[X]: Fluffy[PartialType[Function1, X]#Apply] = new Fluffy[PartialType[Function, X]#Apply] {
-    override def furry[A, B](f: A => B, fa: PartialType[Function, X]#Apply[A]): PartialType[Function, A]#Apply[B] =
+  def Function1Fluffy[X]: Fluffy[PartialType[Function1, X]#Apply] =  ???/*new Fluffy[PartialType[Function, X]#Apply] {
+   override def furry[A, B](f: A => B, fa: PartialType[Function, X]#Apply[A]): PartialType[Function, A]#Apply[B] =
       (v1: A) => f(v1)
-  }
+
+  }*/
 
 
   // Exercise 6
@@ -125,9 +126,10 @@ object Misty {
   // Relative Difficulty: 6
   def Function1Misty[X]: Misty[PartialType[Function1, X]#Apply] = new Misty[PartialType[Function, X]#Apply] {
     override def banana[A, B](f: A => PartialType[Function, X]#Apply[B], ma: PartialType[Function, X]#Apply[A]): PartialType[Function, X]#Apply[B] =
-      new PartialType[Function, X]#Apply[B] {
+      /*new PartialType[Function, X]#Apply[B] {
         override def apply(v1: X): PartialType[Function, X]#Apply[B] = f(ma.apply(v1))
-      }
+      }*/
+    ???
 
     override def unicorn[A](a: A): PartialType[Function, X]#Apply[A] = _ => a
   }

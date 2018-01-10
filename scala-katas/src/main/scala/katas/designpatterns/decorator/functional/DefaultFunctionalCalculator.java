@@ -1,9 +1,6 @@
 package katas.designpatterns.decorator.functional;
 
 import katas.designpatterns.decorator.oo.Calculator;
-import scala.Function2;
-
-import java.math.BigDecimal;
 
 /**
  *Decorator is useful when we’ve got an existing class that we need to add some
