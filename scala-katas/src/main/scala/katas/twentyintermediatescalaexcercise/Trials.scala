@@ -22,15 +22,13 @@ object Trials extends App {
     def unit[A](a: A): Option[A] = Option(a)
   }
 
-  def moppy(as: List[Int], f: Int => Option[String], m: Monad[Option[String]]): Option[List[String]] = {
-
-    as.foldLeft(m.unit(List.empty[String])){(acc: Option[List[String]], a) =>
+  def moppy(as: List[Int], f: Int => Option[String]): Option[List[String]] = {
+    as.foldLeft(None(List.empty[String])){(acc: Option[List[String]], a) =>
       val aStr: Option[String] = f(a)
-      acc.flatMap(l => aStr.map(_ :: l))
-
+      acc.flatMap(list => aStr.map(str => str :: list))
     }
 
   }
 
-  println(moppy(List(1,2,3), i => Some(i.toString+i.toString), new Monad[Option[String]]{}))
+  println(moppy(List(1,2,3), i => Some(i.toString+i.toString)))
 }

@@ -1,4 +1,3 @@
-import Greeter.{Dog, Person}
 //A Typeclass Box in Scala. Allows for a single type to represent any type that responds to a typeclass.
 //https://gist.github.com/pjrt/f11273cf0616d7ec1d82
 
