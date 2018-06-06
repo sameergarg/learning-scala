@@ -54,7 +54,7 @@ class CatsSpec extends WordSpec with Matchers {
   "Functor" should {
     "have map defined" in {
 
-      def func1Functor[In] = new Functor[({type F[A] = (In) => A})#F] {
+      def func1Functor[In] = new Functor[(In) => ?] {
         override def map[A, B](fa: In => A)(f: A => B): In => B = fa andThen f
       }
     }
