@@ -1,4 +1,4 @@
-import cats.Functor
+import cats.{Apply, Functor}
 import org.scalatest.{Matchers, WordSpec}
 import cats.implicits._
 import cats.kernel.{Monoid, Semigroup}
@@ -52,11 +52,96 @@ class CatsSpec extends WordSpec with Matchers {
   }
 
   "Functor" should {
-    "have map defined" in {
+    "map" in {
 
       def func1Functor[In] = new Functor[(In) => ?] {
         override def map[A, B](fa: In => A)(f: A => B): In => B = fa andThen f
       }
+
+      Functor[Option].map(Option("Hello"))(_.length) should be(Some(5))
+    }
+
+    "lift" in {
+      val lenOption: Option[String] => Option[Int] = Functor[Option].lift(_.length)
+
+      lenOption(Some("abcd")) shouldBe Some(4)
+    }
+
+    "fproduct" in {
+      val source = List("Cats", "is", "awesome")
+      val product = Functor[List].fproduct(source)(_.length).toMap
+
+      product.get("Cats").getOrElse(0) should be(4)
+      product.get("is").getOrElse(0) should be(2)
+      product.get("awesome").getOrElse(0) should be(7)
+    }
+
+    "compose" in {
+      val listOpt = Functor[List] compose Functor[Option]
+      listOpt.map(List(Some(1), None, Some(3)))(_ + 1) should be(List(Some(2), None, Some(4)))
+    }
+  }
+
+  "Apply" should {
+    val intToString: Int ⇒ String = _.toString
+    val double: Int ⇒ Int = _ * 2
+    val addTwo: Int ⇒ Int = _ + 2
+
+    val addArity2 = (a: Int, b: Int) ⇒ a + b
+    val addArity3 = (a: Int, b: Int, c: Int) ⇒ a + b + c
+
+    "map" in {
+
+      Apply[Option].map(Some(1))(intToString) should be(Some("1"))
+      Apply[Option].map(Some(1))(double) should be(Some(2))
+      Apply[Option].map(None)(addTwo) should be(None)
+    }
+
+    "compose" in {
+      val listOpt = Apply[List] compose Apply[Option]
+      val plusOne = (x: Int) ⇒ x + 1
+      listOpt.ap(List(Some(plusOne)))(List(Some(1), None, Some(3))) should be(List(Some(2), None, Some(4)))
+    }
+
+    "ap" in {
+      Apply[Option].ap(Some(intToString))(Some(1)) should be(Some("1"))
+      Apply[Option].ap(Some(double))(Some(1)) should be(Some(2))
+      Apply[Option].ap(Some(double))(None) should be(None)
+      Apply[Option].ap(None)(Some(1)) should be(None)
+      Apply[Option].ap(None)(None) should be(None)
+    }
+
+    "ap with arity" in {
+      Apply[Option].ap2(Some(addArity2))(Some(1), Some(2)) should be(Some(3))
+      Apply[Option].ap2(Some(addArity2))(Some(1), None) should be(None)
+
+      Apply[Option].ap3(Some(addArity3))(Some(1), Some(2), Some(3)) should be(Some(6))
+    }
+
+    "map with arity" in {
+      Apply[Option].map2(Some(1), Some(2))(addArity2) should be(Some(3))
+      Apply[Option].map3(Some(1), Some(2), Some(3))(addArity3) should be(Some(6))
+    }
+
+    "tuple n" in {
+      Apply[Option].tuple2(Some(1), Some(2)) should be(Some((1,2)))
+      Apply[Option].tuple3(Some(1), Some(2), Some(3)) should be(Some(1,2,3))
+    }
+
+    "syntax" in {
+      import cats.implicits._
+      val option2 = (Option(1),Option(2))
+      val option3 = (Option(1),Option(2), Option.empty[Int])
+
+      option2 mapN addArity2 should be(Some(3))
+
+      option3 mapN addArity3 should be(None)
+
+      option2 apWith Some(addArity2) should be(Some(3))
+      option3 apWith Some(addArity3) should be(None)
+
+      option2.tupled should be(Some(1, 2))
+      option3.tupled should be(None)
     }
   }
 
