@@ -1,4 +1,4 @@
-import cats.{Apply, Functor}
+import cats.{Applicative, Apply, Functor, Monad}
 import org.scalatest.{Matchers, WordSpec}
 import cats.implicits._
 import cats.kernel.{Monoid, Semigroup}
@@ -143,6 +143,64 @@ class CatsSpec extends WordSpec with Matchers {
       option2.tupled should be(Some(1, 2))
       option3.tupled should be(None)
     }
+  }
+
+  "Applicative" should {
+    "pure" in {
+      Applicative[Option].pure(1) should be(Some(1))
+      Applicative[List].pure(1) should be(List(1))
+    }
+
+    "compose" in {
+      (Applicative[List] compose Applicative[Option]).pure(1) should be(List(Some(1)))
+    }
+
+    "applicative functor and monad" in {
+      Monad[Option].pure(1) should be(Some(1))
+      Applicative[Option].pure(1) should be(Some(1))
+    }
+  }
+
+  "Monad" should {
+    "flatten" in {
+      Option(Option(1)).flatten should be(Some(1))
+      Option(None).flatten should be(None)
+      List(List(1), List(2, 3)).flatten should be(List(1,2,3))
+    }
+
+    def optionMonad(implicit optionApp: Applicative[Option]): Monad[Option] = new Monad[Option] {
+      override def pure[A](x: A): Option[A] = optionApp.pure(x)
+
+      override def flatMap[A, B](fa: Option[A])(f: A => Option[B]): Option[B] = fa.map(f).flatten
+
+      override def tailRecM[A, B](a: A)(f: A => Option[Either[A, B]]): Option[B] = {
+        f(a).flatMap(_.toOption)
+      }
+    }
+  }
+
+  "pure" in {
+    Monad[Option].pure(42) should be(Some(42))
+  }
+
+  "flatmap" in {
+    Monad[List].flatMap(List(1, 2, 3))(x ⇒ List(x, x)) should be(List(1,1,2,2,3,3))
+  }
+
+  "ifM" in {
+    Monad[Option].ifM(Option(true))(Option("truthy"), Option("falsy")) should be(Some("truthy"))
+    Monad[List].ifM(List(true, false, true))(List(1, 2), List(3, 4)) should be(List(1,2,3,4,1,2))
+  }
+
+  case class MyOptionT[F[_], A](value: F[Option[A]])
+
+  def optionT[F[_]](implicit mf: Monad[F]) = new Monad[MyOptionT[F, ?]] {
+
+    override def pure[A](x: A): MyOptionT[F, A] = MyOptionT(mf.pure(Some(x)))
+
+    override def flatMap[A, B](fa: MyOptionT[F, A])(f: A => MyOptionT[F, B]): MyOptionT[F, B] = fa.value.ma
+
+    override def tailRecM[A, B](a: A)(f: A => MyOptionT[F, Either[A, B]]): MyOptionT[F, B] = ???
   }
 
 }
