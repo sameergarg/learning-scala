@@ -1,7 +1,9 @@
-import cats.{Applicative, Apply, Functor, Monad}
-import org.scalatest.{Matchers, WordSpec}
+package scala.excersice.cats
+
 import cats.implicits._
 import cats.kernel.{Monoid, Semigroup}
+import cats.{Applicative, Apply, Functor, Monad}
+import org.scalatest.{Matchers, WordSpec}
 
 class CatsSpec extends WordSpec with Matchers {
 
@@ -12,7 +14,7 @@ class CatsSpec extends WordSpec with Matchers {
       )
 
       Semigroup[List[Int]].combine(List(1, 2, 3), List(4, 5, 6)) should be(
-        List(1,2,3,4,5,6)
+        List(1, 2, 3, 4, 5, 6)
       )
 
       Semigroup[Option[Int]].combine(Option(1), Option(2)) should be(
@@ -33,7 +35,7 @@ class CatsSpec extends WordSpec with Matchers {
     }
 
     "have combine and empty for Maps" in {
-      Monoid[Map[String, Int]].combineAll(List(Map("a" → 1, "b" → 2), Map("a" → 3))) should be(Map("a"->4, "b"->2))
+      Monoid[Map[String, Int]].combineAll(List(Map("a" → 1, "b" → 2), Map("a" → 3))) should be(Map("a" -> 4, "b" -> 2))
       Monoid[Map[String, Int]].combineAll(List()) should be(Map())
     }
 
@@ -124,14 +126,14 @@ class CatsSpec extends WordSpec with Matchers {
     }
 
     "tuple n" in {
-      Apply[Option].tuple2(Some(1), Some(2)) should be(Some((1,2)))
-      Apply[Option].tuple3(Some(1), Some(2), Some(3)) should be(Some(1,2,3))
+      Apply[Option].tuple2(Some(1), Some(2)) should be(Some((1, 2)))
+      Apply[Option].tuple3(Some(1), Some(2), Some(3)) should be(Some(1, 2, 3))
     }
 
     "syntax" in {
       import cats.implicits._
-      val option2 = (Option(1),Option(2))
-      val option3 = (Option(1),Option(2), Option.empty[Int])
+      val option2 = (Option(1), Option(2))
+      val option3 = (Option(1), Option(2), Option.empty[Int])
 
       option2 mapN addArity2 should be(Some(3))
 
@@ -165,7 +167,7 @@ class CatsSpec extends WordSpec with Matchers {
     "flatten" in {
       Option(Option(1)).flatten should be(Some(1))
       Option(None).flatten should be(None)
-      List(List(1), List(2, 3)).flatten should be(List(1,2,3))
+      List(List(1), List(2, 3)).flatten should be(List(1, 2, 3))
     }
 
     def optionMonad(implicit optionApp: Applicative[Option]): Monad[Option] = new Monad[Option] {
@@ -184,23 +186,11 @@ class CatsSpec extends WordSpec with Matchers {
   }
 
   "flatmap" in {
-    Monad[List].flatMap(List(1, 2, 3))(x ⇒ List(x, x)) should be(List(1,1,2,2,3,3))
+    Monad[List].flatMap(List(1, 2, 3))(x ⇒ List(x, x)) should be(List(1, 1, 2, 2, 3, 3))
   }
 
   "ifM" in {
     Monad[Option].ifM(Option(true))(Option("truthy"), Option("falsy")) should be(Some("truthy"))
-    Monad[List].ifM(List(true, false, true))(List(1, 2), List(3, 4)) should be(List(1,2,3,4,1,2))
+    Monad[List].ifM(List(true, false, true))(List(1, 2), List(3, 4)) should be(List(1, 2, 3, 4, 1, 2))
   }
-
-  case class MyOptionT[F[_], A](value: F[Option[A]])
-
-  def optionT[F[_]](implicit mf: Monad[F]) = new Monad[MyOptionT[F, ?]] {
-
-    override def pure[A](x: A): MyOptionT[F, A] = MyOptionT(mf.pure(Some(x)))
-
-    override def flatMap[A, B](fa: MyOptionT[F, A])(f: A => MyOptionT[F, B]): MyOptionT[F, B] = fa.value.ma
-
-    override def tailRecM[A, B](a: A)(f: A => MyOptionT[F, Either[A, B]]): MyOptionT[F, B] = ???
-  }
-
 }
