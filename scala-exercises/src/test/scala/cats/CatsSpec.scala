@@ -2,7 +2,7 @@ package cats
 
 import org.scalatest.{Matchers, WordSpec}
 import cats.implicits._
-import cats.kernel.{Monoid, Semigroup}
+import cats.kernel.Semigroup
 import cats.{Applicative, Apply, Functor, Monad}
 import org.scalatest.{Matchers, WordSpec}
 
