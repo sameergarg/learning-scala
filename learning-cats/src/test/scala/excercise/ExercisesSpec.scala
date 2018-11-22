@@ -56,6 +56,7 @@ class ExercisesSpec extends WordSpec with Matchers with ScalaFutures {
       }
 
       "fail slow in validation" in {
+        List().
         t.validateAndCreatePerson("John", 20) shouldBe Right(Person("John",20))
         t.validateAndCreatePerson("John1", 20) shouldBe Left(Vector("Name cannot contain numbers"))
         t.validateAndCreatePerson("John", -1) shouldBe Left(Vector("Age cannot be zero or less than zero"))
